@@ -1,12 +1,13 @@
 package com.example.pbkou.smarthouse;
 
-import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 public class House_Settings extends AppCompatActivity {
 
@@ -15,10 +16,18 @@ public class House_Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_house__settings);
 
-        //Set toolbar
         //set the toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+
+        Button add_beacon_btn = (Button) findViewById(R.id.add_beacon);
+        final Intent beacon_select_intent = new Intent(this,Add_BeaconActivity.class);
+        add_beacon_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(beacon_select_intent);
+            }
+        });
     }
 
     @Override
