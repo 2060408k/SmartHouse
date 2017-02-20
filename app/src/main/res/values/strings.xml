@@ -5,5 +5,5 @@
     <string name="start_scanning">Start Scanning</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="action_favorite">action_favorite</string>
-
+    <string name="selected_house_beacon_name">selected_house_beacon_name</string>
 </resources>

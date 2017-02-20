@@ -24,16 +24,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/change_activity" />
 
-        <Button
-            android:text="Toggle Scan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnToggleScan" />
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/beacon_list" />
+
     </LinearLayout>
 
 </RelativeLayout>
