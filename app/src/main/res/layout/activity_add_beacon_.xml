@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Beacon Name"
+        android:text="Area Name"
         android:ems="10"
         android:id="@+id/add_beacon_beacon_name" />
 

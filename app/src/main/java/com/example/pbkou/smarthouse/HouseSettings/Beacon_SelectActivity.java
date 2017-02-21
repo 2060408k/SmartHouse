@@ -79,7 +79,7 @@ public class Beacon_SelectActivity extends AppCompatActivity {
                 BeaconInfo newSelectedBeacon = adapter.getItem(position);
                 Log.i(TAG, "Tapped beacon " + newSelectedBeacon.name);
                 SharedPreferences.Editor editor=preferences.edit();
-                editor.putString("selected_beacon",newSelectedBeacon.name);
+                editor.putString("selected_beacon",newSelectedBeacon.name+"/"+newSelectedBeacon.address);
                 editor.commit();
                 if(!isScanning)
                     return;
