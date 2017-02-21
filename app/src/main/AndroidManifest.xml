@@ -34,12 +34,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".House_Settings"
+            android:name=".HouseSettings.House_Settings"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".Add_BeaconActivity"
+            android:name=".HouseSettings.Add_BeaconActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".Beacon_SelectActivity"
+        <activity
+            android:name=".HouseSettings.Beacon_SelectActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".HouseSettings.ViewAllBeacons"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 

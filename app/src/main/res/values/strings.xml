@@ -6,4 +6,9 @@
     <string name="title_activity_main2">Main2Activity</string>
     <string name="action_favorite">action_favorite</string>
     <string name="selected_house_beacon_name">selected_house_beacon_name</string>
+    <string name="view_all_beacons_dialog_message">Do you want to delete this beacon ? </string>
+    <string name="view_all_beacons_dialog_title">Delete beacon</string>
+    <string name="view_all_beacons_dialog_positive_button">Delete</string>
+    <string name="view_all_beacons_dialog_negative_button">Cancel</string>
+    view_all_beacons_dialog_
 </resources>

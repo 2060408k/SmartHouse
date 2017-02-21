@@ -1,4 +1,4 @@
-package com.example.pbkou.smarthouse;
+package com.example.pbkou.smarthouse.HouseSettings;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+
+import com.example.pbkou.smarthouse.R;
 
 public class House_Settings extends AppCompatActivity {
 
@@ -26,6 +29,15 @@ public class House_Settings extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(beacon_select_intent);
+            }
+        });
+
+        Button view_beacons = (Button) findViewById(R.id.beacon_areas);
+        final Intent beacon_view_intent = new Intent(this,ViewAllBeacons.class);
+        view_beacons.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(beacon_view_intent);
             }
         });
     }

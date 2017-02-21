@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.example.pbkou.smarthouse.House_Settings">
+    tools:context="com.example.pbkou.smarthouse.HouseSettings.House_Settings">
 
     <android.support.v7.widget.Toolbar
 

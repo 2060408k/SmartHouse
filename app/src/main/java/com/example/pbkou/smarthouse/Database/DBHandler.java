@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class DBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "beaconDB.db";
     private static final String TABLE_BEACONS = "beacons";
 
@@ -53,6 +53,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public void addBeacon(Beacon beacon) {
 
         ContentValues values = new ContentValues();
+        values.put(COLUMN_ID, beacon.getId());
         values.put(COLUMN_BEACONNAME, beacon.getName());
         values.put(COLUMN_ADDRESS, beacon.getAddress());
         values.put(COLUMN_AREA, beacon.getArea());
@@ -97,7 +98,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @param beaconname The beaco name
      * @return True if succeded, False otherwise
      */
-    public boolean deleteProduct(String beaconname) {
+    public boolean deleteBeacon(String beaconname) {
 
         boolean result = false;
 
@@ -111,6 +112,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             beacon.setId(cursor.getString(0));
+            System.out.println(beacon.getId()+" delete");
             db.delete(TABLE_BEACONS, COLUMN_ID + " = ?",
                     new String[] { beacon.getId() });
             cursor.close();
@@ -136,6 +138,7 @@ public class DBHandler extends SQLiteOpenHelper {
         try {
             while (cursor.moveToNext()) {
                 Beacon beacon = new Beacon();
+                System.out.println(cursor.getString(0)+" getall");
                 beacon.setId(cursor.getString(0));
                 beacon.setName(cursor.getString(1));
                 beacon.setAddress(cursor.getString(2));

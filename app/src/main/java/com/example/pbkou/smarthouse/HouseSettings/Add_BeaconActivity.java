@@ -1,4 +1,4 @@
-package com.example.pbkou.smarthouse;
+package com.example.pbkou.smarthouse.HouseSettings;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +18,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pbkou.smarthouse.Beacon;
 import com.example.pbkou.smarthouse.Database.DBHandler;
+import com.example.pbkou.smarthouse.R;
 
 public class Add_BeaconActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.pbkou.smarthouse;
+package com.example.pbkou.smarthouse.HouseSettings;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -28,6 +28,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
+import com.example.pbkou.smarthouse.MainActivity;
+import com.example.pbkou.smarthouse.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

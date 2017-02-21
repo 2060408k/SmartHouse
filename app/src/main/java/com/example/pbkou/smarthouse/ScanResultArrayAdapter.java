@@ -23,6 +23,7 @@ public class ScanResultArrayAdapter extends BaseAdapter {
     private final Context context;
     private final HashMap<String, BeaconInfo> data;
     private final List<String> keys;
+    
     // currently selected beacon, if any
     private BeaconInfo selectedBeacon = null;
 
