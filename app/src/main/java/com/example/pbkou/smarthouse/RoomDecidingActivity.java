@@ -14,26 +14,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.pbkou.smarthouse.Database.DBHandler;
-import com.example.pbkou.smarthouse.Database.LoginActivity;
-import com.example.pbkou.smarthouse.HouseSettings.ViewAllBeacons;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.io.IOException;
-import java.util.HashMap;
-
 public class RoomDecidingActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
-    private SharedPreferences preferences;
-    private static final String TAG = "RoomDecidingActivity";
-    private Long last_room=0l;
+    private Long last_room=0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +49,7 @@ public class RoomDecidingActivity extends AppCompatActivity {
                 android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(RoomDecidingActivity.this);
 
                 final EditText et = new EditText(RoomDecidingActivity.this);
-                et.setText("Room number");
+                et.setText(R.string.room_number);
                 et.setTextSize(28);
 
                 // set prompts.xml to alertdialog builder
@@ -118,7 +108,7 @@ public class RoomDecidingActivity extends AppCompatActivity {
 
                 et.setTextSize(28);
                 final Long room_num = last_room;
-                et.setText("Room number : "+room_num);
+                et.setText(R.string.room_number+room_num.toString());
                 // set prompts.xml to alertdialog builder
 
                 alertDialogBuilder.setView(et);
@@ -157,13 +147,6 @@ public class RoomDecidingActivity extends AppCompatActivity {
     }
 
 
-
-    public void updateLastRoomDb(int i){
-        //get database reference
-        mDatabase= FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("last_room").setValue(i);
-
-    }
 
 
     private void loadData(){

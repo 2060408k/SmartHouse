@@ -1,10 +1,7 @@
 package com.example.pbkou.smarthouse.HouseSettings;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.pbkou.smarthouse.Beacon;
@@ -46,7 +42,6 @@ public class ViewAllBeacons extends AppCompatActivity {
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
             tv.setTextSize(32);
-            final ViewAllBeacons ac= this;
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -54,7 +49,7 @@ public class ViewAllBeacons extends AppCompatActivity {
                     android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(ViewAllBeacons.this);
 
                     final TextView et = new TextView(ViewAllBeacons.this);
-                    et.setText("Do you want to delete this beacon ?");
+                    et.setText(R.string.delete_beacon_dialog_title);
                     et.setTextSize(28);
 
                     // set prompts.xml to alertdialog builder

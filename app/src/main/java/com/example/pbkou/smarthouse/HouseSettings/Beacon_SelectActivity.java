@@ -29,7 +29,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
 import com.example.pbkou.smarthouse.MainActivity;
 import com.example.pbkou.smarthouse.R;
 
@@ -52,8 +51,6 @@ public class Beacon_SelectActivity extends AppCompatActivity {
     private boolean isScanning = false;
     private int scanMode = ScanSettings.SCAN_MODE_BALANCED;
 
-
-    private int lastx = 0;
 
     // currently selected beacon, if any
     private BeaconInfo selectedBeacon = null;
@@ -166,7 +163,7 @@ public class Beacon_SelectActivity extends AppCompatActivity {
         }
 
         selectedBeacon = null;
-        toggleScan.setText("Start scanning");
+        toggleScan.setText(R.string.start_scanning);
         scanAdapter.clear();
     }
 
@@ -197,7 +194,7 @@ public class Beacon_SelectActivity extends AppCompatActivity {
         ScanSettings settings = new ScanSettings.Builder().setScanMode(scanMode).build();
         scanner.startScan(filters, settings, bleScanCallback);
         isScanning = true;
-        toggleScan.setText("Stop scanning");
+        toggleScan.setText(R.string.stop_scanning);
     }
 
     // class implementing BleScanner callbacks
@@ -239,10 +236,10 @@ public class Beacon_SelectActivity extends AppCompatActivity {
 
     // simple class to hold data about a beacon
     private class BeaconInfo {
-        public BluetoothDevice device;
-        public String address;
-        public String name;
-        public int rssi;
+        private BluetoothDevice device;
+        private String address;
+        private String name;
+        private int rssi;
 
         private static final int WINDOW_SIZE = 9;
         private int[] window = new int[WINDOW_SIZE];
@@ -258,7 +255,7 @@ public class Beacon_SelectActivity extends AppCompatActivity {
         }
 
         // called when a new scan result for this beacon is parsed
-        public void updateRssi(int newRssi) {
+        private void updateRssi(int newRssi) {
             this.rssi = newRssi;
             window[windowptr] = newRssi;
             windowptr = (windowptr + 1) % WINDOW_SIZE;
@@ -312,7 +309,7 @@ public class Beacon_SelectActivity extends AppCompatActivity {
             this.data = new HashMap<>();
         }
 
-        public void clear() {
+        private void clear() {
             data.clear();
             keys.clear();
             notifyDataSetChanged();
@@ -335,7 +332,7 @@ public class Beacon_SelectActivity extends AppCompatActivity {
 
         // updates the dataset with a new scan result. may create a new BeaconInfo object or update
         // an existing one.
-        public void update(BluetoothDevice beaconDevice, String beaconAddress, String beaconName, int beaconRssi) {
+        private void update(BluetoothDevice beaconDevice, String beaconAddress, String beaconName, int beaconRssi) {
             if(data.containsKey(beaconAddress)) {
                 data.get(beaconAddress).updateRssi(beaconRssi);
             } else {
