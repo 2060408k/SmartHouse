@@ -3,11 +3,13 @@ package com.example.pbkou.smarthouse;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RelativeLayout;
 import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
 
@@ -31,6 +33,14 @@ public class MainActivity extends AppCompatActivity {
         }
         RelativeLayout r_layout = (RelativeLayout) findViewById(R.id.content_main);
         r_layout.setPadding(16,actionBarHeight,16,16);
+
+        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.btn_conversations);
+        final Intent intent = new Intent(this,Conversations.class);
+        myFab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(intent);
+            }
+        });
 
 
     }

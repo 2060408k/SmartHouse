@@ -44,6 +44,8 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".HouseSettings.ViewAllBeacons"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name="Conversations"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>
