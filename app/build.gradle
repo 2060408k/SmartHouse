@@ -28,6 +28,9 @@ dependencies {
     compile 'com.android.support:design:25.1.1'
     compile 'com.jjoe64:graphview:4.0.1'
     compile 'org.altbeacon:android-beacon-library:2+'
+    compile 'com.google.firebase:firebase-auth:10.0.1'
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
+    compile 'com.google.firebase:firebase-database:10.0.1'
     testCompile 'junit:junit:4.12'
 }
 repositories {
@@ -36,3 +39,7 @@ repositories {
 dependencies {
     compile 'com.sendbird.sdk:sendbird-android-sdk:3.0.17'
 }
+dependencies {
+    compile 'com.google.firebase:firebase-auth:9.2.1'
+}
+apply plugin: 'com.google.gms.google-services'

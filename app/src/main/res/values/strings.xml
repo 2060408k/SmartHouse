@@ -10,5 +10,12 @@
     <string name="view_all_beacons_dialog_title">Delete beacon</string>
     <string name="view_all_beacons_dialog_positive_button">Delete</string>
     <string name="view_all_beacons_dialog_negative_button">Cancel</string>
-    view_all_beacons_dialog_
+    <string name="google_signed_out">Signed out</string>
+    <string name="google_sign_out">Sign Out</string>
+    <string name="google_disconnect">Disconnect</string>
+    <string name="title_text">Google Sign-In\nQuickstart</string>
+    <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="loading">Loading…</string>
+    <string name="room_number">Room number </string>
+    <string name="delete_beacon_dialog_title">Do you want to delete this beacon ?</string>
 </resources>

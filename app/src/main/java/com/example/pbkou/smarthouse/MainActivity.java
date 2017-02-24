@@ -10,7 +10,11 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+
 import android.widget.RelativeLayout;
+
+import com.example.pbkou.smarthouse.Database.LoginActivity;
 import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        //get intent
+        Intent intent = getIntent();
+        Integer room_num = intent.getIntExtra("room_num",0);
+        System.out.println(room_num);
+
         //Set content_main padding
         int actionBarHeight = 0;
 
@@ -35,13 +44,22 @@ public class MainActivity extends AppCompatActivity {
         r_layout.setPadding(16,actionBarHeight,16,16);
 
         FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.btn_conversations);
-        final Intent intent = new Intent(this,Conversations.class);
+        final Intent intent2 = new Intent(this,Conversations.class);
         myFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(intent);
+                startActivity(intent2);
             }
         });
 
+
+        Button change_activity_btn = (Button) findViewById(R.id.change_activity);
+        final Intent change_activity_intent = new Intent(this, LoginActivity.class);
+        change_activity_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(change_activity_intent);
+            }
+        });
 
     }
 
