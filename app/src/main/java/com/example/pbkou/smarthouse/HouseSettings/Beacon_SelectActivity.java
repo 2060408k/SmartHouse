@@ -1,5 +1,6 @@
 package com.example.pbkou.smarthouse.HouseSettings;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -61,6 +62,7 @@ public class Beacon_SelectActivity extends AppCompatActivity {
 
         preferences=PreferenceManager.getDefaultSharedPreferences(this);
 
+        this.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},1);
         //set the toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);

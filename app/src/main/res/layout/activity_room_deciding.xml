@@ -16,7 +16,17 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" >
 
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </RelativeLayout>
     <Button
         android:text="Join House"
         android:layout_width="match_parent"
@@ -24,7 +34,7 @@
         android:id="@+id/join_house_btn" />
 
     <Button
-        android:text="Button"
+        android:text="Create House"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/create_house_btn" />
