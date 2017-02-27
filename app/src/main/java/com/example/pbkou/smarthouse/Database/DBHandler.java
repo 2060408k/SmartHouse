@@ -7,16 +7,23 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.pbkou.smarthouse.Beacon;
+import com.example.pbkou.smarthouse.Message;
+import com.example.pbkou.smarthouse.MessageRecipient;
+import com.example.pbkou.smarthouse.UserGroup;
+import com.example.pbkou.smarthouse.Group;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by pbkou on 21/02/2017.
  */
 
+
 public class DBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "beaconDB.db";
     private static final String TABLE_BEACONS = "beacons";
 
@@ -25,24 +32,98 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_ADDRESS = "address";
     public static final String COLUMN_AREA = "area";
 
+    /* Chat Required Databases */
+
+    // Users table from Onlie Database
+    // Message Table
+    private static final String TABLE_MESSAGES = "messages";
+
+    public static final String COLUMN_MESSAGE_ID = "id";
+    public static final String COLUMN_CREATOR_ID = "creator";
+    public static final String COLUMN_MESSAGE_BODY = "body";
+    public static final String COLUMN_CREATE_DATE = "createDate";
+    public static final String COLUMN_PARENT_ID = "parent";
+
+    // Message_Recipient Table
+    private static final String TABLE_MESS_RECIPIENT = "recipient";
+
+    public static final String COLUMN_MESS_RES_ID = "recipientID";
+    public static final String COLUMN_RECIP_GROUP = "groupID";
+    public static final String COLUMN_MESS_ID = "messageID";
+
+    // Group Table
+    private static final String TABLE_GROUP = "group_tbl";
+
+    public static final String COLUMN_GROUP_ID = "groupID";
+    public static final String COLUMN_GROUP_NAME = "name";
+    public static final String COLUMN_GROUP_CREATEDATE = "createDate";
+
+    // User_Group Aggregate Table
+    private static final String TABLE_USER_GROUP_AGGR = "user_group";
+
+    public static final String COLUMN_UG_ID = "ugID";
+    public static final String COLUMN_F_USER = "userF";
+    public static final String COLUMN_F_GROUP = "groupF";
+
     public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_PRODUCTS_TABLE = "CREATE TABLE " +
+        String CREATE_PRODUCTS_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_BEACONS + "("
                 + COLUMN_ID + " TEXT PRIMARY KEY,"
                 + COLUMN_BEACONNAME + " TEXT,"
                 + COLUMN_ADDRESS + " TEXT,"
                 + COLUMN_AREA + " TEXT" + ")";
         db.execSQL(CREATE_PRODUCTS_TABLE);
+
+        String CREATE_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " +
+                TABLE_MESSAGES + "("
+                + COLUMN_MESSAGE_ID + " TEXT PRIMARY KEY,"
+                + COLUMN_CREATOR_ID + " TEXT,"
+                + COLUMN_MESSAGE_BODY  + " TEXT,"
+                + COLUMN_CREATE_DATE + "DATE,"
+                + COLUMN_PARENT_ID + " TEXT" + ")";
+        db.execSQL(CREATE_MESSAGE_TABLE);
+
+        String CREATE_GROUP_TABLE = "CREATE TABLE IF NOT EXISTS " +
+                TABLE_GROUP + "("
+                + COLUMN_GROUP_ID + " TEXT PRIMARY KEY,"
+                + COLUMN_GROUP_NAME + " TEXT,"
+                + COLUMN_GROUP_CREATEDATE + " DATE" + ")";
+        db.execSQL(CREATE_GROUP_TABLE);
+
+        String CREATE_USER_GROUP_TABLE = "CREATE TABLE IF NOT EXISTS " +
+                TABLE_USER_GROUP_AGGR + "("
+                + COLUMN_UG_ID + " TEXT PRIMARY KEY,"
+                + COLUMN_F_USER + " TEXT,"
+                + COLUMN_F_GROUP + " TEXT,"
+                + "FOREIGN KEY(" + COLUMN_F_GROUP + ") REFERENCES "+ TABLE_GROUP + "("+COLUMN_GROUP_ID+")" + ")";
+        db.execSQL(CREATE_USER_GROUP_TABLE);
+
+        String CREATE_MESSAGE_RECIPIENT_TABLE = "CREATE TABLE IF NOT EXISTS " +
+                TABLE_MESS_RECIPIENT + "("
+                + COLUMN_MESS_RES_ID + " TEXT PRIMARY KEY,"
+                + COLUMN_RECIP_GROUP + " TEXT,"
+                + COLUMN_MESS_ID + " TEXT,"
+                + "FOREIGN KEY(" + COLUMN_RECIP_GROUP + ") REFERENCES "+ TABLE_USER_GROUP_AGGR + "("+COLUMN_UG_ID+")"
+                + "FOREIGN KEY(" + COLUMN_MESS_ID + ") REFERENCES "+ TABLE_MESSAGES + "("+COLUMN_MESSAGE_ID+")" + ")";
+        db.execSQL(CREATE_MESSAGE_RECIPIENT_TABLE);
+
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BEACONS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_GROUP_AGGR);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUP);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESS_RECIPIENT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
+
         onCreate(db);
     }
 
@@ -59,7 +140,6 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_AREA, beacon.getArea());
 
         SQLiteDatabase db = this.getWritableDatabase();
-
         db.insert(TABLE_BEACONS, null, values);
         db.close();
     }
@@ -152,12 +232,151 @@ public class DBHandler extends SQLiteOpenHelper {
         return out;
     }
 
-    public void resetBeaconTable(){
-        String query = "DELETE FROM "+TABLE_BEACONS;
+
+    public void resetBeaconTable() {
+        String query = "DELETE FROM " + TABLE_BEACONS;
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
+    }
+
+    /**
+     * Create a new group
+     * @param group Group object
+     */
+    public void createGroup(Group group) {
+        System.out.println(DATABASE_VERSION);
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_GROUP_ID, group.getGroupID());
+        values.put(COLUMN_GROUP_NAME, group.getName());
+        values.put(COLUMN_GROUP_CREATEDATE, group.getCreateDate());
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.insert(TABLE_GROUP, null, values);
+        db.close();
+    }
+    /**
+     * Create a new user group instance
+     * @param userG UserGroup object
+     */
+    public void createUserGroup(UserGroup userG) {
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_UG_ID, userG.getId());
+        values.put(COLUMN_F_USER, userG.getUser());
+        values.put(COLUMN_F_GROUP, userG.getGroup());
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.insert(TABLE_USER_GROUP_AGGR, null, values);
+        db.close();
+
+    }
+
+    /**
+     * Create a new message recipient instance
+     * @param messRec messageRecipient object
+     */
+    public void createMessageRecipient(MessageRecipient messRec) {
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_MESS_RES_ID, messRec.getId());
+        values.put(COLUMN_RECIP_GROUP, messRec.getGroup());
+        values.put(COLUMN_MESS_ID, messRec.getMessage());
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.insert(TABLE_MESS_RECIPIENT, null, values);
+        db.close();
+
+    }
+
+    /**
+     * Create a new message recipient instance
+     * @param message messageRecipient object
+     */
+    public void createMessage(Message message) {
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_MESSAGE_ID, message.getId());
+        values.put(COLUMN_CREATOR_ID, message.getCreator());
+        values.put(COLUMN_MESSAGE_BODY, message.getBody());
+        values.put(COLUMN_CREATE_DATE, (message.getCreateDate()).toString());
+        values.put(COLUMN_PARENT_ID, message.getParent());
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.insert(TABLE_MESSAGES, null, values);
+        db.close();
+
+    }
+
+    /**
+     * Get all groups (conversations) from the database
+     * @return ArrayList with the groups (conversations)
+     */
+    public ArrayList<String> getUsersOfGroup(Group g){
+        String query = "Select * FROM " + TABLE_USER_GROUP_AGGR ;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+
+
+
+        ArrayList<String> out = new ArrayList<String>();
+
+        try {
+            while (cursor.moveToNext()) {
+                UserGroup userg = new UserGroup();
+                userg.setId(cursor.getString(0));
+                userg.setGroup(cursor.getString(1));
+                userg.setUser(cursor.getString(2));
+                if (userg.getGroup().equals(g.getGroupID()) ){
+                    String user = userg.getUser();
+                    out.add(user);
+                }
+
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return out;
+    }
+
+    /**
+     * Get all groups (conversations) from the database
+     * @return ArrayList with the groups (conversations)
+     */
+    public ArrayList<Map<Group, ArrayList>> getAllConversations(){
+        String query = "Select * FROM " + TABLE_GROUP ;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        ArrayList<Map<Group, ArrayList>> out = new ArrayList<>();
+
+        try {
+            while (cursor.moveToNext()) {
+                Group group = new Group();
+                group.setGroupID(cursor.getString(0));
+                group.setName(cursor.getString(1));
+                ArrayList Users = getUsersOfGroup(group);
+                Map<Group, ArrayList> map = new HashMap<Group, ArrayList>();
+                map.put(group, Users);
+                out.add(map);
+            }
+        } finally {
+            cursor.close();
+        }
+        return out;
     }
 
 }
