@@ -151,4 +151,13 @@ public class DBHandler extends SQLiteOpenHelper {
 
         return out;
     }
+
+    public void resetBeaconTable(){
+        String query = "DELETE FROM "+TABLE_BEACONS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+    }
+
 }

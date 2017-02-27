@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.pbkou.smarthouse.Database.DBHandler;
+import com.example.pbkou.smarthouse.HouseSettings.ViewAllBeacons;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,6 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class RoomDecidingActivity extends AppCompatActivity {
 
@@ -85,10 +90,14 @@ public class RoomDecidingActivity extends AppCompatActivity {
 
                                 SharedPreferences.Editor editor = preferences.edit();
                                 editor.putString("house_num",house_num.toString());
-                                editor.putString("role","admin");//must change later
+                                editor.putString("role","user");//must change later
+                                setUserPrivilages(house_num.toString());
                                 editor.apply();
                                 mDatabase.child("users").child(user).setValue(0);
+                                DBHandler dbhandler = new DBHandler(RoomDecidingActivity.this);
+                                dbhandler.resetBeaconTable();
 
+                                loadBeaconsFromFirebase(house_num.toString());
                                 startActivity(intent);
                             }
 
@@ -194,11 +203,32 @@ public class RoomDecidingActivity extends AppCompatActivity {
     }
 
     private void loadBeaconsFromFirebase(String house_num){
-        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("house_numbers").child(house_num).child("rooms");
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap map = (HashMap) dataSnapshot.getValue();
+                HashMap<Object,Object> map = (HashMap) dataSnapshot.getValue();
+                DBHandler handler = new DBHandler(getBaseContext());
+                if(map==null || map.size()==0) return;
+                Iterator it = map.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry pair = (Map.Entry)it.next();
+                    //System.out.println(pair.getKey() + " = " + pair.getValue());
+
+                    Beacon beacon = new Beacon();
+
+                    //Get key = area
+                    beacon.setArea(pair.getKey().toString());
+
+                    HashMap<String,String> values = (HashMap)map.get(pair.getKey().toString());
+                    beacon.setAddress(values.get("beacon_address"));
+                    beacon.setId(values.get("beacon_id"));
+                    beacon.setName(values.get("beacon_name"));
+
+                    handler.addBeacon(beacon);
+
+                    it.remove(); // avoids a ConcurrentModificationException
+                }
             }
 
             @Override
@@ -207,4 +237,39 @@ public class RoomDecidingActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void setUserPrivilages(String house_num){
+
+
+        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("house_numbers").child(house_num).child("admin_id");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                //get from preference the current user id
+                String current_user_id = preferences.getString("user","");
+
+                //get the admin id of the house
+                String admin_id= (String) dataSnapshot.getValue();
+
+                //if it's this user then make him admin
+                if (current_user_id.equals(admin_id)){
+
+                    //get the editor
+                    SharedPreferences.Editor editor=preferences.edit();
+
+                    //set in shared preferences the role as admin
+                    editor.putString("role","admin");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 }
