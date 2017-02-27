@@ -48,10 +48,13 @@
         <activity
             android:name=".Database.LoginActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".RoomDecidingActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity android:name="Conversations"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity
+            android:name=".RoomDecidingActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".Conversations"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".notifications"></activity>
     </application>
 
 </manifest>
