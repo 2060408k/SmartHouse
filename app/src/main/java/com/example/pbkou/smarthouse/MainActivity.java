@@ -14,6 +14,7 @@ import android.widget.Button;
 
 import android.widget.RelativeLayout;
 
+import com.example.pbkou.smarthouse.Database.DBHandler;
 import com.example.pbkou.smarthouse.Database.LoginActivity;
 import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
 
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         Integer room_num = intent.getIntExtra("room_num",0);
         System.out.println(room_num);
 
+        //Test start database
+        DBHandler handler = new DBHandler(getBaseContext());
         //Set content_main padding
         int actionBarHeight = 0;
 
