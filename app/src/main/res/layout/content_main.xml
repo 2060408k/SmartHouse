@@ -14,25 +14,19 @@
     android:orientation="vertical"
     tools:showIn="@layout/activity_main">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <Button
+        android:text="@string/change_activity"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/change_activity" />
 
-        <Button
-            android:text="Change activity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/change_activity" />
-
-
-
-    </LinearLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_conversations"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:srcCompat="@android:drawable/ic_dialog_email"
+        app:elevation="7dp" />
+
 </LinearLayout>
