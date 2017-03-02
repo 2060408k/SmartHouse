@@ -435,9 +435,10 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     private Message getMessage(String msgR) {
-        String query = "Select * FROM " + TABLE_MESSAGES + " Where id= \" " + msgR + "\"";
+        String query = "Select * FROM " + TABLE_MESSAGES ;
         SQLiteDatabase db = this.getWritableDatabase();
         Message message = null;
+
         try (Cursor cursor = db.rawQuery(query, null)) {
             System.out.println("Query length: " + cursor.getCount());
 
@@ -445,19 +446,39 @@ public class DBHandler extends SQLiteOpenHelper {
                 message = new Message();
                 message.setId(cursor.getString(0));
                 message.setCreator(cursor.getString(1));
-                System.out.println("Message: " +message.getCreator());
                 message.setBody(cursor.getString(2));
-                System.out.println("Message: " +message.getBody());
                 DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
                 Date startDate = df.parse(cursor.getString(3));
                 message.setCreateDate(startDate);
-                System.out.println("Date before format: " +cursor.getString(3));
-                System.out.println("Date after format: " +message.getCreateDate());
                 message.setParent(cursor.getString(4));
+                System.out.println("Message body: "+message.getBody());
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
+//        String query = "Select * FROM " + TABLE_MESSAGES + " Where id= \" " + msgR + "\"";
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Message message = null;
+//        try (Cursor cursor = db.rawQuery(query, null)) {
+//            System.out.println("Query length: " + cursor.getCount());
+//
+//            while (cursor.moveToNext()) {
+//                message = new Message();
+//                message.setId(cursor.getString(0));
+//                message.setCreator(cursor.getString(1));
+//                System.out.println("Message: " +message.getCreator());
+//                message.setBody(cursor.getString(2));
+//                System.out.println("Message: " +message.getBody());
+//                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+//                Date startDate = df.parse(cursor.getString(3));
+//                message.setCreateDate(startDate);
+//                System.out.println("Date before format: " +cursor.getString(3));
+//                System.out.println("Date after format: " +message.getCreateDate());
+//                message.setParent(cursor.getString(4));
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
         return message;
     }
 

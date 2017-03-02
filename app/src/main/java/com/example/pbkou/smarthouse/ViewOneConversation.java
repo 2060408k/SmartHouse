@@ -43,8 +43,15 @@ public class ViewOneConversation extends AppCompatActivity {
 //        chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(), R.layout.right_message);
 //        listView.setAdapter(chatArrayAdapter);
 
-        DBHandler dbhandler = new DBHandler(ViewOneConversation.this);
 
+        DBHandler dbhandler = new DBHandler(ViewOneConversation.this);
+//        //manually add a message in this conversation
+//        Date date = new Date();
+//        Message message = new Message("testUser","Testing message 2",date,group.getGroupID());
+//        dbhandler.createMessage(message);
+//        MessageRecipient msgRec = new MessageRecipient(group.getGroupID(), message.getId());
+//        dbhandler.createMessageRecipient(msgRec);
+//        System.out.println("******Added manually the message.");
         // Get Group from previous activity
         String jsonMyObject = null;
         Bundle bundle = getIntent().getExtras();

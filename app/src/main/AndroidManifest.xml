@@ -54,6 +54,9 @@
         <activity
             android:name=".Conversations"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".ViewOneConversation"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".notifications"></activity>
     </application>
 

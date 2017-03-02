@@ -50,18 +50,6 @@ public class Conversations extends AppCompatActivity {
 
         DBHandler dbhandler = new DBHandler(getBaseContext());
 
-        //Uncomment this to manually add a converstation
-////        /* Insert test data - One Conversation with 2 users */
-//        Group testGroup = new Group("testGroup3","25/02/2017");
-//        dbhandler.createGroup(testGroup);
-//        UserGroup userGroup1 = new UserGroup(testGroup.getGroupID(),"User1");
-//        UserGroup userGroup2 = new UserGroup(testGroup.getGroupID(),"User2");
-//        dbhandler.createUserGroup(userGroup1);
-//        dbhandler.createUserGroup(userGroup2);
-//        System.out.println(testGroup);
-//        System.out.println(userGroup1);
-//        System.out.println(userGroup2);
-
         ArrayList<Map<Group, ArrayList>> all_conversations = dbhandler.getAllConversations();
 
         int index=1;
