@@ -72,6 +72,12 @@
         <activity
             android:name=".Conversations"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".ViewOneConversation"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".AddConversation"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".notifications" />
 
         <service android:name=".Database.MyFirebaseMessagingService">

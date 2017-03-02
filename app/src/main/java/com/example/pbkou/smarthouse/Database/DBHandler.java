@@ -385,7 +385,25 @@ public class DBHandler extends SQLiteOpenHelper {
         }
         return out;
     }
+    public ArrayList<Group> getAllConvNoUsers(){
+        String query = "Select * FROM " + TABLE_GROUP ;
 
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<Group> out = new ArrayList<>();
+
+        try {
+            while (cursor.moveToNext()) {
+                Group group = new Group();
+                group.setGroupID(cursor.getString(0));
+                group.setName(cursor.getString(1));
+                out.add(group);
+            }
+        } finally {
+            cursor.close();
+        }
+        return out;
+    }
     public boolean deleteGroup(Group group) {
 
         boolean result = false;
@@ -431,7 +449,6 @@ public class DBHandler extends SQLiteOpenHelper {
                 msgR.setId(cursor.getString(0));
                 msgR.setGroup(cursor.getString(1));
                 msgR.setMessage(cursor.getString(2));
-                System.out.println("Message ID from getMessagesOfGroup: "+msgR.getMessage());
                 msRec.add(msgR);
             }
         } finally {
@@ -453,7 +470,6 @@ public class DBHandler extends SQLiteOpenHelper {
                 message.setBody(cursor.getString(2));
                 message.setCreateDate(cursor.getString(3));
                 message.setParent(cursor.getString(4));
-                System.out.println("Message Table Content: " + message.getBody() );
             }
         } finally {
             cursor.close();
@@ -471,7 +487,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 msgR.setId(cursor.getString(0));
                 msgR.setGroup(cursor.getString(1));
                 msgR.setMessage(cursor.getString(2));
-                System.out.println("Message Recipient Table Content: -Group: " + msgR.getGroup() +"- Message: "+ msgR.getMessage() );
+                //System.out.println("Message Recipient Table Content: -Group: " + msgR.getGroup() +"- Message: "+ msgR.getMessage() );
             }
         } finally {
             cursor.close();

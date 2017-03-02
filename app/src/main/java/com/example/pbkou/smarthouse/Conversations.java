@@ -13,7 +13,10 @@ import android.view.MenuItem;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.pbkou.smarthouse.Database.DBHandler;
@@ -41,7 +44,7 @@ public class Conversations extends AppCompatActivity {
         final LinearLayout main_view = (LinearLayout) findViewById(R.id.conversations_scroll_view);
 
         final FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.btn_create_conv);
-        final Intent intent = new Intent(this,Conversations.class);
+        final Intent intent = new Intent(this,AddConversation.class);
         myFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(intent);
@@ -58,6 +61,7 @@ public class Conversations extends AppCompatActivity {
 //        UserGroup userGroup2 = new UserGroup(testGroup.getGroupID(),"User2");
 //        dbhandler.createUserGroup(userGroup1);
 //        dbhandler.createUserGroup(userGroup2);
+
 
         ArrayList<Map<Group, ArrayList>> all_conversations = dbhandler.getAllConversations();
 
