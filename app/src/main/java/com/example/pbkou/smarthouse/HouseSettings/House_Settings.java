@@ -36,6 +36,7 @@ public class House_Settings extends AppCompatActivity {
         }else{
             role="unidentified";
         }
+        System.out.println(role);
 
 
         Button add_beacon_btn = (Button) findViewById(R.id.add_beacon);
@@ -45,6 +46,7 @@ public class House_Settings extends AppCompatActivity {
         add_beacon_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("meow");
                 startActivity(beacon_select_intent);
             }
         });
