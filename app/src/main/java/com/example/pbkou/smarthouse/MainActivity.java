@@ -2,6 +2,7 @@ package com.example.pbkou.smarthouse;
 
 
 import android.content.Intent;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import android.widget.Button;
 
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pbkou.smarthouse.Database.DBHandler;
 import com.example.pbkou.smarthouse.Database.LoginActivity;
@@ -22,6 +25,8 @@ import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
 
 public class MainActivity extends AppCompatActivity {
 
+    private NfcAdapter mNfcAdapter;
+    private TextView mTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +71,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mTextView = (TextView) findViewById(R.id.textView_explanation);
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (mNfcAdapter == null) {
+            // Stop here, we definitely need NFC
+            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+
+        }
+
+        if (!mNfcAdapter.isEnabled()) {
+            mTextView.setText("NFC is disabled.");
+        } else {
+            mTextView.setText(R.string.explanation);
+        }
+
+        handleIntent(this.getIntent());
+    }
+
+    private void handleIntent(Intent intent) {
+        // TODO: handle Intent
     }
 
     @Override

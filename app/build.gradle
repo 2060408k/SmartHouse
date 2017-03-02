@@ -40,6 +40,9 @@ dependencies {
     compile 'com.sendbird.sdk:sendbird-android-sdk:3.0.17'
 }
 dependencies {
-    compile 'com.google.firebase:firebase-auth:9.2.1'
+    compile 'com.google.firebase:firebase-auth:10.2.0'
+}
+dependencies {
+    compile 'com.google.firebase:firebase-messaging:10.2.0'
 }
 apply plugin: 'com.google.gms.google-services'
