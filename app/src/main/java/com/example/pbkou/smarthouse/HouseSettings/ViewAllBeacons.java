@@ -2,6 +2,8 @@ package com.example.pbkou.smarthouse.HouseSettings;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,15 +17,25 @@ import android.widget.TextView;
 import com.example.pbkou.smarthouse.Beacon;
 import com.example.pbkou.smarthouse.Database.DBHandler;
 import com.example.pbkou.smarthouse.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class ViewAllBeacons extends AppCompatActivity {
 
+    private DatabaseReference mDatabase;
+
+    private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_beacons);
+
+
+        //Get the preference manager
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //set the toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -33,9 +45,8 @@ public class ViewAllBeacons extends AppCompatActivity {
 
         DBHandler dbhandler = new DBHandler(ViewAllBeacons.this);
         ArrayList<Beacon> all_beacons = dbhandler.getAllBeacons();
-        for (Beacon beacon : all_beacons){
+        for (final Beacon beacon : all_beacons){
             final Beacon temp_beacon = beacon;
-            System.out.println(temp_beacon.getId()+"temp");
             TextView tv = new TextView(this);
             tv.setText(beacon.getArea() + "\n"+beacon.getName() + "\n" + beacon.getAddress());
             tv.setLayoutParams(new ViewGroup.LayoutParams(
@@ -59,14 +70,24 @@ public class ViewAllBeacons extends AppCompatActivity {
                     alertDialogBuilder.setCancelable(true).setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
 
+                            //delete beacon from local database
                             DBHandler dbhandler = new DBHandler(ViewAllBeacons.this);
-                            System.out.println(dbhandler.deleteBeacon(temp_beacon.getName()));
-                            System.out.println(temp_beacon.getId());
+                            dbhandler.deleteBeacon(beacon.getName());
+
+                            //delete beacon from online database
+                            String house_num = preferences.getString("house_num","");
+                            String admin = preferences.getString("role","");
+
+                            if(!house_num.isEmpty() && admin.equals("admin")) {
+                                mDatabase = FirebaseDatabase.getInstance().getReference().child("house_numbers");
+                                mDatabase.child(house_num).child("rooms").child(temp_beacon.getArea()).removeValue();
+                            }
+
 
                             Intent intent = getIntent();
                             finish();
                             startActivity(intent);
-                            //dialog.dismiss();
+
 
                         }
                     }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

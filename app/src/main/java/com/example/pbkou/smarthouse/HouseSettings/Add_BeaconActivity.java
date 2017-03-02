@@ -18,6 +18,8 @@ import android.widget.Toast;
 import com.example.pbkou.smarthouse.Beacon;
 import com.example.pbkou.smarthouse.Database.DBHandler;
 import com.example.pbkou.smarthouse.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Add_BeaconActivity extends AppCompatActivity {
 
@@ -28,6 +30,8 @@ public class Add_BeaconActivity extends AppCompatActivity {
     private Context context;
 
     private EditText area;
+
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +91,7 @@ public class Add_BeaconActivity extends AppCompatActivity {
 
                 if (!beacon_already_exists || !area_already_exists){
                     dbhandler.addBeacon(beacon);
+                    addBeaconToFirebase(beacon);
                     onBackPressed();
                 }else{
                     if(beacon_already_exists && area_already_exists)
@@ -168,6 +173,19 @@ public class Add_BeaconActivity extends AppCompatActivity {
         super.onDestroy();
 
     }
+
+    public void addBeaconToFirebase(Beacon beacon){
+        String house_num = preferences.getString("house_num","");
+        String admin = preferences.getString("role","");
+        System.out.println(house_num + " " + admin);
+        if(!house_num.isEmpty() && admin.equals("admin")){
+            mDatabase= FirebaseDatabase.getInstance().getReference().child("house_numbers").child(house_num).child("rooms").child(beacon.getArea());
+            mDatabase.child("beacon_id").setValue(beacon.getId());
+            mDatabase.child("beacon_address").setValue(beacon.getAddress());
+            mDatabase.child("beacon_name").setValue(beacon.getName());
+        }
+    }
+
     //Getters-Setters
     public String getSelectedBeacon() {
         return selectedBeacon;

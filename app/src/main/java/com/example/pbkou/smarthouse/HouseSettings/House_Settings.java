@@ -1,6 +1,8 @@
 package com.example.pbkou.smarthouse.HouseSettings;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +16,8 @@ import com.example.pbkou.smarthouse.R;
 
 public class House_Settings extends AppCompatActivity {
 
+
+    private String role ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +27,20 @@ public class House_Settings extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        //Get preferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String admin = preferences.getString("role","");
+        if (!admin.isEmpty()) {
+            if (admin.equals("admin")) role ="admin";
+            else role="user";
+        }else{
+            role="unidentified";
+        }
+
+
         Button add_beacon_btn = (Button) findViewById(R.id.add_beacon);
+        //Set this visible if admin
+        if(role.equals("admin")) add_beacon_btn.setVisibility(View.VISIBLE);
         final Intent beacon_select_intent = new Intent(this,Add_BeaconActivity.class);
         add_beacon_btn.setOnClickListener(new View.OnClickListener() {
             @Override

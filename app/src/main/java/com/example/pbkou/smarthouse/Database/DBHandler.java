@@ -241,6 +241,14 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
 
+    public void resetBeaconTable() {
+        String query = "DELETE FROM " + TABLE_BEACONS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+    }
+
     /**
      * Create a new group
      * @param group Group object
@@ -324,6 +332,9 @@ public class DBHandler extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery(query, null);
 
+
+
+
         ArrayList<String> out = new ArrayList<String>();
 
         try {
@@ -344,6 +355,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         return out;
     }
+
     /**
      * Get all groups (conversations) from the database
      * @return ArrayList with the groups (conversations)
@@ -448,4 +460,5 @@ public class DBHandler extends SQLiteOpenHelper {
         }
         return message;
     }
+
 }

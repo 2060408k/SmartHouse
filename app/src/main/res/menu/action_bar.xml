@@ -5,7 +5,7 @@
 
         <!-- Settings, should always be in the overflow -->
     <item
-        android:id="@+id/house_settings"
+        android:id="@+id/conversations_scroll_view"
         android:icon="@android:drawable/sym_action_chat"
         android:title="@string/action_favorite"
         app:showAsAction="always"/>
@@ -15,11 +15,11 @@
         android:title="@string/action_favorite"
         app:showAsAction="always"/>
     <item
-            android:id="@+id/conversations_scroll_view"
+            android:id="@+id/house_settings"
             android:icon="@drawable/ic_account_balance_black_24dp"
             android:title="@string/action_favorite"
             app:showAsAction="always"/>
-        <item xmlns:app="http://schemas.android.com/apk/res-auto"
+    <item xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/action_settings"
             android:title="@string/action_settings"
             app:showAsAction="never"/>

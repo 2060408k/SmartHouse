@@ -25,13 +25,20 @@
         android:paddingRight="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/add_beacon" />
+        android:id="@+id/add_beacon"
+        android:visibility="gone" />
 
     <Button
         android:text="See All Beacons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/beacon_areas" />
+
+    <Button
+        android:text="Add Beacon Activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_beacon_activity_btn" />
 
     <LinearLayout
         android:orientation="vertical"
