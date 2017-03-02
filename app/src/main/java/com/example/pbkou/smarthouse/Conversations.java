@@ -49,6 +49,15 @@ public class Conversations extends AppCompatActivity {
         });
 
         DBHandler dbhandler = new DBHandler(getBaseContext());
+        //dbhandler.DeleteMessagesOfGroup();
+        //Uncomment this to manually add a converstation
+//        /* Insert test data - One Conversation with 2 users */
+//        Group testGroup = new Group("testGroup1","25/02/2017");
+//        dbhandler.createGroup(testGroup);
+//        UserGroup userGroup1 = new UserGroup(testGroup.getGroupID(),"User1");
+//        UserGroup userGroup2 = new UserGroup(testGroup.getGroupID(),"User2");
+//        dbhandler.createUserGroup(userGroup1);
+//        dbhandler.createUserGroup(userGroup2);
 
         ArrayList<Map<Group, ArrayList>> all_conversations = dbhandler.getAllConversations();
 
