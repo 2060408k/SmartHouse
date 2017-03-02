@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.pbkou.smarthouse.Beacon;
 import com.example.pbkou.smarthouse.Message;
@@ -12,9 +13,16 @@ import com.example.pbkou.smarthouse.MessageRecipient;
 import com.example.pbkou.smarthouse.UserGroup;
 import com.example.pbkou.smarthouse.Group;
 
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by pbkou on 21/02/2017.
@@ -246,8 +254,6 @@ public class DBHandler extends SQLiteOpenHelper {
      * @param group Group object
      */
     public void createGroup(Group group) {
-        System.out.println(DATABASE_VERSION);
-
         ContentValues values = new ContentValues();
         values.put(COLUMN_GROUP_ID, group.getGroupID());
         values.put(COLUMN_GROUP_NAME, group.getName());
@@ -377,6 +383,103 @@ public class DBHandler extends SQLiteOpenHelper {
             cursor.close();
         }
         return out;
+    }
+
+    public boolean deleteGroup(Group group) {
+
+        boolean result = false;
+        System.out.println("***************************************************************");
+        //Delete all user group instances of the particular group
+        String query = "Select * FROM " + TABLE_USER_GROUP_AGGR + " WHERE " + COLUMN_F_GROUP + " =  \"" + group + "\"";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        UserGroup userg = new UserGroup();
+
+        if (cursor.moveToFirst()) {
+            userg.setId(cursor.getString(0));
+            System.out.println(userg.getId()+" delete");
+            db.delete(TABLE_USER_GROUP_AGGR, COLUMN_UG_ID + " = ?",
+                    new String[] { userg.getId() });
+            cursor.close();
+            result = true;
+        }
+        db.close();
+        return result;
+    }
+
+    public ArrayList<Message> getMessagesOfGroup(Group g){
+        String query = "Select * FROM " + TABLE_MESS_RECIPIENT +" Where groupID= \""+ g.getGroupID()+"\"";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<Message> msgIDS = new ArrayList<Message>();
+        try {
+            while (cursor.moveToNext()) {
+                MessageRecipient msgR = new MessageRecipient();
+                msgR.setId(cursor.getString(0));
+                msgR.setGroup(cursor.getString(1));
+                System.out.println("Group: " + msgR.getGroup());
+                msgR.setMessage(cursor.getString(2));
+                System.out.println("MessageID: " +msgR.getMessage());
+                msgIDS.add(getMessage(msgR.getMessage()));
+            }
+        } finally {
+            cursor.close();
+        }
+        System.out.println(msgIDS);
+        return msgIDS;
+    }
+
+    private Message getMessage(String msgR) {
+        String query = "Select * FROM " + TABLE_MESSAGES ;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Message message = null;
+
+        try (Cursor cursor = db.rawQuery(query, null)) {
+            System.out.println("Query length: " + cursor.getCount());
+
+            while (cursor.moveToNext()) {
+                message = new Message();
+                message.setId(cursor.getString(0));
+                message.setCreator(cursor.getString(1));
+                message.setBody(cursor.getString(2));
+                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                Date startDate = df.parse(cursor.getString(3));
+                message.setCreateDate(startDate);
+                message.setParent(cursor.getString(4));
+                System.out.println("Message body: "+message.getBody());
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+//        String query = "Select * FROM " + TABLE_MESSAGES + " Where id= \" " + msgR + "\"";
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Message message = null;
+//        try (Cursor cursor = db.rawQuery(query, null)) {
+//            System.out.println("Query length: " + cursor.getCount());
+//
+//            while (cursor.moveToNext()) {
+//                message = new Message();
+//                message.setId(cursor.getString(0));
+//                message.setCreator(cursor.getString(1));
+//                System.out.println("Message: " +message.getCreator());
+//                message.setBody(cursor.getString(2));
+//                System.out.println("Message: " +message.getBody());
+//                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+//                Date startDate = df.parse(cursor.getString(3));
+//                message.setCreateDate(startDate);
+//                System.out.println("Date before format: " +cursor.getString(3));
+//                System.out.println("Date after format: " +message.getCreateDate());
+//                message.setParent(cursor.getString(4));
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        return message;
     }
 
 }

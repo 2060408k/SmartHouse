@@ -34,6 +34,10 @@
             android:id="@+id/conversations_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="6"
+            android:background="@drawable/rounded_circle"
+            android:padding="16dp"
             android:orientation="vertical" />
     </ScrollView>
 

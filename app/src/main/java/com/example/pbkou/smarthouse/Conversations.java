@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.pbkou.smarthouse.Database.DBHandler;
 import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
 import com.example.pbkou.smarthouse.HouseSettings.ViewAllBeacons;
+import com.sendbird.android.shadow.com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -37,9 +38,9 @@ public class Conversations extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        LinearLayout main_view = (LinearLayout) findViewById(R.id.conversations_scroll_view);
+        final LinearLayout main_view = (LinearLayout) findViewById(R.id.conversations_scroll_view);
 
-        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.btn_create_conv);
+        final FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.btn_create_conv);
         final Intent intent = new Intent(this,Conversations.class);
         myFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -49,26 +50,14 @@ public class Conversations extends AppCompatActivity {
 
         DBHandler dbhandler = new DBHandler(getBaseContext());
 
-        //Uncomment this to manually add a converstation
-////        /* Insert test data - One Conversation with 2 users */
-//        Group testGroup = new Group("testGroup3","25/02/2017");
-//        dbhandler.createGroup(testGroup);
-//        UserGroup userGroup1 = new UserGroup(testGroup.getGroupID(),"User1");
-//        UserGroup userGroup2 = new UserGroup(testGroup.getGroupID(),"User2");
-//        dbhandler.createUserGroup(userGroup1);
-//        dbhandler.createUserGroup(userGroup2);
-//        System.out.println(testGroup);
-//        System.out.println(userGroup1);
-//        System.out.println(userGroup2);
-
         ArrayList<Map<Group, ArrayList>> all_conversations = dbhandler.getAllConversations();
 
         int index=1;
         for (Map<Group, ArrayList> conv : all_conversations) {
             final Map<Group, ArrayList> temp_group = conv;
             for (final Map.Entry<Group, ArrayList> entry : temp_group.entrySet()) {
-                System.out.println(entry);
-                System.out.println(entry.getKey().getName() + "temp");
+//                System.out.println(entry);
+//                System.out.println(entry.getKey().getName() + "temp");
                 TextView tv = new TextView(this);
                 String content = "Conversation "+ index + "\n" + entry.getKey().getName() + "\n";
                 for (int i = 0; i < entry.getValue().size(); i++) {
@@ -83,9 +72,11 @@ public class Conversations extends AppCompatActivity {
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT));
                 tv.setTextSize(32);
-                tv.setOnClickListener(new View.OnClickListener() {
+                //TODO: DELETE IS NOT WORKING AT THE MOMENT
+                tv.setOnLongClickListener(new View.OnLongClickListener(){
+
                     @Override
-                    public void onClick(View v) {
+                    public boolean onLongClick(View v) {
 
                         android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(Conversations.this);
 
@@ -99,10 +90,14 @@ public class Conversations extends AppCompatActivity {
                         // set dialog message
                         alertDialogBuilder.setCancelable(true).setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                System.out.println("---11111------------------");
 
                                 DBHandler dbhandler = new DBHandler(Conversations.this);
-                                //System.out.println(dbhandler.deleteGroup(entry.getKey()));
-                                System.out.println(entry.getKey().getGroupID());
+                                System.out.println("------------------------------");
+                                for (Map.Entry<Group, ArrayList> entry : temp_group.entrySet()) {
+                                    System.out.println(entry);
+                                    System.out.println(dbhandler.deleteGroup(entry.getKey()));
+                                }
 
                                 Intent intent = getIntent();
                                 finish();
@@ -121,12 +116,21 @@ public class Conversations extends AppCompatActivity {
                         android.app.AlertDialog alertDialog = alertDialogBuilder.create();
                         // show it
                         alertDialog.show();
+                        return false;
                     }
+                });
+                tv.setOnClickListener(new View.OnClickListener(){
+
+                    @Override
+                    public void onClick(View v) {
+                        Intent view_conv = new Intent(v.getContext(), ViewOneConversation.class);
+                        view_conv.putExtra("group", new Gson().toJson(entry.getKey()));
+                        startActivity(view_conv);
+                        }
                 });
                 main_view.addView(tv);
             }
         }
-
     }
 
     @Override
