@@ -53,15 +53,6 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout r_layout = (LinearLayout) findViewById(R.id.content_main);
         r_layout.setPadding(16,actionBarHeight,16,16);
 
-        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.btn_conversations);
-        final Intent intent2 = new Intent(this,Conversations.class);
-        myFab.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startActivity(intent2);
-            }
-        });
-
-
         Button change_activity_btn = (Button) findViewById(R.id.change_activity);
         final Intent change_activity_intent = new Intent(this, LoginActivity.class);
         change_activity_btn.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +61,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(change_activity_intent);
             }
         });
+        System.out.println("About to enter tasks");
+        Button tasks_btn = (Button) findViewById(R.id.btn_tasks);
+        tasks_btn.setOnClickListener(new View.OnClickListener(){
 
+            @Override
+            public void onClick(View v) {
+                Intent tasks_intent = new Intent(v.getContext(), Tasks.class);
+                startActivity(tasks_intent);
+            }
+        });
         mTextView = (TextView) findViewById(R.id.textView_explanation);
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
@@ -125,6 +125,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.house_settings:
                 Intent intent = new Intent(this,House_Settings.class);
                 startActivity(intent);
+                break;
+            case R.id.view_conversations:
+                Intent intent2 = new Intent(this,Conversations.class);
+                startActivity(intent2);
                 break;
             default:
                 break;

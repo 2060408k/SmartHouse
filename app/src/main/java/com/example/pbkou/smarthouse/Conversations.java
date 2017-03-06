@@ -3,8 +3,10 @@ package com.example.pbkou.smarthouse;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -64,87 +66,100 @@ public class Conversations extends AppCompatActivity {
 
 
         ArrayList<Map<Group, ArrayList>> all_conversations = dbhandler.getAllConversations();
-
+        //Get current user name
+        SharedPreferences preferences;
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String user = preferences.getString("user","");
         int index=1;
+        boolean flag=false;
         for (Map<Group, ArrayList> conv : all_conversations) {
             final Map<Group, ArrayList> temp_group = conv;
             for (final Map.Entry<Group, ArrayList> entry : temp_group.entrySet()) {
-//                System.out.println(entry);
-//                System.out.println(entry.getKey().getName() + "temp");
-                TextView tv = new TextView(this);
-                String content = "Conversation "+ index + "\n" + entry.getKey().getName() + "\n";
-                for (int i = 0; i < entry.getValue().size(); i++) {
-                    content += entry.getValue().get(i);
-                    if (i != entry.getValue().size()-1){
-                        content += ", ";
-                    }
-                }
-                index++;
-                tv.setText(content);
-                tv.setLayoutParams(new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
-                tv.setTextSize(32);
-                //TODO: DELETE IS NOT WORKING AT THE MOMENT
-                tv.setOnLongClickListener(new View.OnLongClickListener(){
-
-                    @Override
-                    public boolean onLongClick(View v) {
-
-                        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(Conversations.this);
-
-                        final TextView et = new TextView(Conversations.this);
-                        et.setText(R.string.delete_conversation);
-                        et.setTextSize(28);
-
-                        // set prompts.xml to alertdialog builder
-                        alertDialogBuilder.setView(et);
-
-                        // set dialog message
-                        alertDialogBuilder.setCancelable(true).setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                System.out.println("---11111------------------");
-
-                                DBHandler dbhandler = new DBHandler(Conversations.this);
-                                System.out.println("------------------------------");
-                                for (Map.Entry<Group, ArrayList> entry : temp_group.entrySet()) {
-                                    System.out.println(entry);
-                                    System.out.println(dbhandler.deleteGroup(entry.getKey()));
-                                }
-
-                                Intent intent = getIntent();
-                                finish();
-                                startActivity(intent);
-                                //dialog.dismiss();
-
-                            }
-                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-
-                        // create alert dialog
-                        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
-                        // show it
-                        alertDialog.show();
-                        return false;
-                    }
-                });
-                tv.setOnClickListener(new View.OnClickListener(){
-
-                    @Override
-                    public void onClick(View v) {
-                        Intent view_conv = new Intent(v.getContext(), ViewOneConversation.class);
-                        view_conv.putExtra("group", new Gson().toJson(entry.getKey()));
-                        startActivity(view_conv);
+                //Check if this conversation contains the signed in user
+//                for (int i = 0; i < entry.getValue().size(); i++) {
+//                    if (entry.getValue().get(i) == user) {
+//                        flag = true;
+//                    }
+//                }
+                //TODO: uncomment above section and set flag to true in order to show conversations of signed in user
+                if (flag == false) {
+                    TextView tv = new TextView(this);
+                    String content = entry.getKey().getName() + "\n";
+                    for (int i = 0; i < entry.getValue().size(); i++) {
+                        content += entry.getValue().get(i);
+                        if (i != entry.getValue().size() - 1) {
+                            content += ", ";
                         }
-                });
-                main_view.addView(tv);
+                        content += "\n";
+                    }
+                    index++;
+                    tv.setText(content);
+                    tv.setLayoutParams(new ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+                    tv.setTextSize(32);
+                    //TODO: DELETE IS NOT WORKING AT THE MOMENT
+                    tv.setOnLongClickListener(new View.OnLongClickListener() {
+
+                        @Override
+                        public boolean onLongClick(View v) {
+
+                            android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(Conversations.this);
+
+                            final TextView et = new TextView(Conversations.this);
+                            et.setText(R.string.delete_conversation);
+                            et.setTextSize(28);
+
+                            // set prompts.xml to alertdialog builder
+                            alertDialogBuilder.setView(et);
+
+                            // set dialog message
+                            alertDialogBuilder.setCancelable(true).setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    System.out.println("---11111------------------");
+
+                                    DBHandler dbhandler = new DBHandler(Conversations.this);
+                                    System.out.println("------------------------------");
+                                    for (Map.Entry<Group, ArrayList> entry : temp_group.entrySet()) {
+                                        System.out.println(entry);
+                                        System.out.println(dbhandler.deleteGroup(entry.getKey()));
+                                    }
+
+                                    Intent intent = getIntent();
+                                    finish();
+                                    startActivity(intent);
+                                    //dialog.dismiss();
+
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                            // create alert dialog
+                            android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                            // show it
+                            alertDialog.show();
+                            return false;
+                        }
+                    });
+                    tv.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            Intent view_conv = new Intent(v.getContext(), ViewOneConversation.class);
+                            view_conv.putExtra("group", new Gson().toJson(entry.getKey()));
+                            startActivity(view_conv);
+                        }
+                    });
+                    main_view.addView(tv);
+                }
             }
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -160,6 +175,10 @@ public class Conversations extends AppCompatActivity {
             case R.id.house_settings:
                 Intent intent = new Intent(this,House_Settings.class);
                 startActivity(intent);
+                break;
+            case R.id.view_conversations:
+                Intent intent2 = new Intent(this,Conversations.class);
+                startActivity(intent2);
                 break;
             default:
                 break;

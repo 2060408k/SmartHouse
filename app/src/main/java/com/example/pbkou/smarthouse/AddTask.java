@@ -1,7 +1,5 @@
 package com.example.pbkou.smarthouse;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,45 +9,41 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pbkou.smarthouse.Database.DBHandler;
-import com.example.pbkou.smarthouse.HouseSettings.Add_BeaconActivity;
-import com.example.pbkou.smarthouse.HouseSettings.Beacon_SelectActivity;
 import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.sendbird.android.shadow.com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 
 /**
- * Created by Alexiah on 02/03/2017.
+ * Created by Alexiah on 03/03/2017.
  */
 
-public class AddConversation extends AppCompatActivity {
-
+public class AddTask  extends AppCompatActivity {
     private SharedPreferences preferences;
-    private EditText area;
     private DatabaseReference mDatabase;
     final ArrayList<String> selectedUsers = new ArrayList<String>();
+    private TextView dateView;
+    private Calendar calendar;
+    private DatePicker datePicker;
+    private int year, month, day;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_converation);
-
+        setContentView(R.layout.activity_add_task);
         //Get the preference manager
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -57,9 +51,16 @@ public class AddConversation extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        //set date
+        dateView = (TextView) findViewById(R.id.textView3);
+        calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        final String date = day +"/"+month+"/"+year;
 
-        //set the ConvName editext
-        final EditText conv_name_txt = (EditText) findViewById(R.id.add_conv_name);
+        //set the body task editext
+        final EditText task_body_txt = (EditText) findViewById(R.id.add_task_body);
 
         //Populate List of users
         ListView mListView = (ListView) findViewById(R.id.users_scroll_view);
@@ -84,40 +85,31 @@ public class AddConversation extends AppCompatActivity {
         });
 
         //add btn
-        Button add_btn= (Button) findViewById(R.id.add_conv_add);
+        Button add_btn= (Button) findViewById(R.id.add_task_btn);
         add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //clear the conv text
                 clearSelectedConvText();
                 DBHandler dbhandler = new DBHandler(getBaseContext());
-                String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                Group addgroup = new Group(conv_name_txt.getText().toString(),date);
+                Task addTask = new Task(selectedUsers.get(0),task_body_txt.getText().toString(),date);
 
-                boolean conv_already_exists= false;
-                for (Group g :dbhandler.getAllConvNoUsers()){
-                    if (g.getName().equals(addgroup.getName())) conv_already_exists=true;
+                boolean multipleUsers= false;
+                if (selectedUsers.size()>1){
+                    multipleUsers=true;
                 }
-                if (!conv_already_exists ){
-                    dbhandler.createGroup(addgroup);
-                    int x=0;
-                    for (x=0; x<selectedUsers.size(); x++){
-                        UserGroup userGroup = new UserGroup(addgroup.getGroupID(),selectedUsers.get(x));
-                        dbhandler.createUserGroup(userGroup);
-                    }
+                if (!multipleUsers ){
+                    dbhandler.createTask(addTask);
                     onBackPressed();
-                    Intent intent = new Intent(AddConversation.this, Conversations.class );
+                    Intent intent = new Intent(AddTask.this, Tasks.class );
                     startActivity(intent);
                 }else{
-                    if(conv_already_exists)
-                        Toast.makeText(AddConversation.this,"Conversation name already exists",Toast.LENGTH_LONG).show();
+                    if(multipleUsers)
+                        Toast.makeText(AddTask.this,"Only one user can be assigned!",Toast.LENGTH_LONG).show();
                 }
             }
         });
-
-
     }
-
     private void updateSelectedUsers() {
         ListView selectedUse = (ListView) findViewById(R.id.selected_users_scroll_view);
 
@@ -137,7 +129,16 @@ public class AddConversation extends AppCompatActivity {
             }
         });
     }
-
+    protected void clearSelectedConvText() {
+        SharedPreferences.Editor editor=preferences.edit();
+        editor.putString("selected_conv_name","");
+        editor.commit();
+    }
+    protected void clearSelectedConvSelectedText() {
+        SharedPreferences.Editor editor=preferences.edit();
+        editor.putString("selected_conv","");
+        editor.commit();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,49 +155,14 @@ public class AddConversation extends AppCompatActivity {
                 Intent intent = new Intent(this,House_Settings.class);
                 startActivity(intent);
                 break;
+            case R.id.view_conversations:
+                Intent intent2 = new Intent(this,Conversations.class);
+                startActivity(intent2);
+                break;
             default:
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onBackPressed() {
-        clearSelectedConvText();
-        clearSelectedConvSelectedText();
-        super.onBackPressed();
-
-    }
-
-    protected void clearSelectedConvText() {
-        SharedPreferences.Editor editor=preferences.edit();
-        editor.putString("selected_conv_name","");
-        editor.commit();
-    }
-    protected void clearSelectedConvSelectedText() {
-        SharedPreferences.Editor editor=preferences.edit();
-        editor.putString("selected_conv","");
-        editor.commit();
-    }
-
-    public void onDestroy() {
-        clearSelectedConvText();
-        clearSelectedConvSelectedText();
-        super.onDestroy();
-
-    }
-
-
-    //Getters-Setters
-
-    public EditText getArea() {
-        return area;
-    }
-
-    public void setArea(EditText area) {
-        this.area = area;
-    }
 }
-
-

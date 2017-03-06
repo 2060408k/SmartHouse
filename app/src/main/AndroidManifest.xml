@@ -78,6 +78,9 @@
         <activity
             android:name=".AddConversation"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".Tasks"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".notifications" />
 
         <service android:name=".Database.MyFirebaseMessagingService">
@@ -89,7 +92,6 @@
         <activity
             android:name=".NFCActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
         </activity>
     </application>
 

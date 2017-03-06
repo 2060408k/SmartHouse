@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.pbkou.smarthouse.Beacon;
 import com.example.pbkou.smarthouse.Message;
 import com.example.pbkou.smarthouse.MessageRecipient;
+import com.example.pbkou.smarthouse.Task;
 import com.example.pbkou.smarthouse.UserGroup;
 import com.example.pbkou.smarthouse.Group;
 
@@ -74,6 +75,14 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_F_USER = "userF";
     public static final String COLUMN_F_GROUP = "groupF";
 
+    //Assigned Tasks Table
+    private static final String TABLE_TASKS = "tasks";
+
+    public static final String COLUMN_TASK_ID = "taskId";
+    public static final String COLUMN_TASK_USER = "taskUser";
+    public static final String COLUMN_TASK_DATE = "taskDate";
+    public static final String COLUMN_TASK_BODY = "taskBody";
+
     public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -122,7 +131,14 @@ public class DBHandler extends SQLiteOpenHelper {
                 + "FOREIGN KEY(" + COLUMN_MESS_ID + ") REFERENCES "+ TABLE_MESSAGES + "("+COLUMN_MESSAGE_ID+")" + ")";
         db.execSQL(CREATE_MESSAGE_RECIPIENT_TABLE);
 
-
+        String CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS " +
+                TABLE_TASKS + "("
+                + COLUMN_TASK_ID + " TEXT,"
+                + COLUMN_TASK_USER + " TEXT PRIMARY KEY,"
+                + COLUMN_TASK_DATE + " TEXT,"
+                + COLUMN_TASK_BODY + " TEXT,"
+                + ")";
+        db.execSQL(CREATE_TASKS_TABLE);
     }
 
     @Override
@@ -132,7 +148,8 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUP);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESS_RECIPIENT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
-        System.out.println("oldVersion: "+ oldVersion + " newVersion: "+newVersion);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS);
+
         onCreate(db);
     }
 
@@ -514,4 +531,38 @@ public class DBHandler extends SQLiteOpenHelper {
         return message;
     }
 
+    public ArrayList<Task> getAllTasks() {
+
+        String query = "Select * FROM " + TABLE_TASKS ;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Task> tasks = new ArrayList<Task>();
+        Cursor cursor = db.rawQuery(query, null);
+        try {
+            while (cursor.moveToNext()) {
+                Task task = new Task();
+                task.setTaskId(cursor.getString(0));
+                task.setUser(cursor.getString(1));
+                task.setDate(cursor.getString(2));
+                task.setBody(cursor.getString(3));
+                tasks.add(task);
+            }
+        } finally {
+            cursor.close();
+        }
+        return tasks;
+    }
+
+    public void createTask(Task task) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TASK_ID, task.getTaskId());
+        values.put(COLUMN_TASK_USER, task.getUser());
+        values.put(COLUMN_TASK_DATE, task.getDate());
+        values.put(COLUMN_TASK_BODY, task.getBody());
+
+        db.insert(TABLE_TASKS, null, values);
+        db.close();
+
+    }
 }

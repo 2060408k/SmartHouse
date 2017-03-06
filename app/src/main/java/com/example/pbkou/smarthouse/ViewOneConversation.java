@@ -29,7 +29,6 @@ import java.util.Date;
  */
 public class ViewOneConversation extends AppCompatActivity {
 
-    private ChatArrayAdapter chatArrayAdapter;
     private EditText chatText;
     private boolean side = false;
 
