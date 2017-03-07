@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         //get intent
         Intent intent = getIntent();
-        Integer room_num = intent.getIntExtra("room_num",0);
+        Integer room_num = intent.getIntExtra("room_num", 0);
         System.out.println(room_num);
 
         //Test start database
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
         LinearLayout r_layout = (LinearLayout) findViewById(R.id.content_main);
-        r_layout.setPadding(16,actionBarHeight,16,16);
+        r_layout.setPadding(16, actionBarHeight, 16, 16);
 
         Button change_activity_btn = (Button) findViewById(R.id.change_activity);
         final Intent change_activity_intent = new Intent(this, LoginActivity.class);
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         });
         System.out.println("About to enter tasks");
         Button tasks_btn = (Button) findViewById(R.id.btn_tasks);
-        tasks_btn.setOnClickListener(new View.OnClickListener(){
+        tasks_btn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         }
-
+    }
 
 
     @Override

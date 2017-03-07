@@ -152,6 +152,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             SharedPreferences.Editor editor=preferences.edit();
 
             editor.putString("user",acct.getId());
+            editor.putString("user_name",acct.getDisplayName());
             editor.commit();
             Intent intent = new Intent(this, RoomDecidingActivity.class);
             startActivity(intent);
