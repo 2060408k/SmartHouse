@@ -55,6 +55,7 @@ public class RoomDecidingActivity extends AppCompatActivity {
         //get the user id
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         final String user = sharedPref.getString("user","");
+        final String user_name = sharedPref.getString("user_name","");
 
         //load data
         loadData();
@@ -82,7 +83,7 @@ public class RoomDecidingActivity extends AppCompatActivity {
                         try {
                             //make sure they gave a number
                             house_num = Integer.parseInt(et.getText().toString());
-                            System.out.println(house_num);
+
                             //get database reference
                             mDatabase= FirebaseDatabase.getInstance()
                                     .getReference()
@@ -90,18 +91,23 @@ public class RoomDecidingActivity extends AppCompatActivity {
                                     .child(house_num.toString());
 
                             if(!user.isEmpty()) {
-                                Intent intent = new Intent(getBaseContext(),MainActivity.class);
 
+                                //set users data
                                 SharedPreferences.Editor editor = preferences.edit();
                                 editor.putString("house_num",house_num.toString());
                                 editor.putString("role","user");//must change later
                                 setUserPrivilages(house_num.toString());
                                 editor.apply();
-                                mDatabase.child("users").child(user).setValue(0);
+
+                                //update database
+                                mDatabase.child("users").child(user).child("name").setValue(user_name);
                                 DBHandler dbhandler = new DBHandler(RoomDecidingActivity.this);
                                 dbhandler.resetBeaconTable();
 
+                                //get the beacons from database
                                 loadBeaconsFromFirebase(house_num.toString());
+
+                                Intent intent = new Intent(getBaseContext(),MainActivity.class);
                                 startActivity(intent);
                             }
 
@@ -148,7 +154,7 @@ public class RoomDecidingActivity extends AppCompatActivity {
 
                             mDatabase= FirebaseDatabase.getInstance().getReference();
                             mDatabase.child("house_numbers").child(last_house_number.toString()).child("admin_id").setValue(user);
-                            mDatabase.child("house_numbers").child(last_house_number.toString()).child("users").child(user).setValue(0);
+                            mDatabase.child("house_numbers").child(last_house_number.toString()).child("users").child(user).child("name").setValue(user_name);
 
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putString("house_num",last_house_number.toString());
