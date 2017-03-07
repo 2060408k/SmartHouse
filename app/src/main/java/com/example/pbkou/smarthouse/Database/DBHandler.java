@@ -33,7 +33,7 @@ import static android.content.ContentValues.TAG;
 
 public class DBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 17;
     private static final String DATABASE_NAME = "beaconDB.db";
     private static final String TABLE_BEACONS = "beacons";
 
@@ -133,10 +133,10 @@ public class DBHandler extends SQLiteOpenHelper {
 
         String CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_TASKS + "("
-                + COLUMN_TASK_ID + " TEXT,"
-                + COLUMN_TASK_USER + " TEXT PRIMARY KEY,"
+                + COLUMN_TASK_ID + " TEXT PRIMARY KEY,"
+                + COLUMN_TASK_USER + " TEXT,"
                 + COLUMN_TASK_DATE + " TEXT,"
-                + COLUMN_TASK_BODY + " TEXT,"
+                + COLUMN_TASK_BODY + " TEXT"
                 + ")";
         db.execSQL(CREATE_TASKS_TABLE);
     }

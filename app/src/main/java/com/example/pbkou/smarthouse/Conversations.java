@@ -116,10 +116,8 @@ public class Conversations extends AppCompatActivity {
                             // set dialog message
                             alertDialogBuilder.setCancelable(true).setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    System.out.println("---11111------------------");
 
                                     DBHandler dbhandler = new DBHandler(Conversations.this);
-                                    System.out.println("------------------------------");
                                     for (Map.Entry<Group, ArrayList> entry : temp_group.entrySet()) {
                                         System.out.println(entry);
                                         System.out.println(dbhandler.deleteGroup(entry.getKey()));

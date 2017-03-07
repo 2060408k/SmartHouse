@@ -1,5 +1,6 @@
 package com.example.pbkou.smarthouse;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -26,18 +27,21 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Alexiah on 03/03/2017.
  */
 
-public class AddTask  extends AppCompatActivity {
+public class AddTask  extends AppCompatActivity implements View.OnClickListener {
     private SharedPreferences preferences;
     private DatabaseReference mDatabase;
     final ArrayList<String> selectedUsers = new ArrayList<String>();
     private TextView dateView;
     private Calendar calendar;
-    private DatePicker datePicker;
+    private DatePickerDialog datePicker;
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+
     private int year, month, day;
 
     @Override
@@ -51,16 +55,24 @@ public class AddTask  extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        //set date
-        dateView = (TextView) findViewById(R.id.textView3);
-        calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        final String date = day +"/"+month+"/"+year;
-
         //set the body task editext
         final EditText task_body_txt = (EditText) findViewById(R.id.add_task_body);
+        task_body_txt.requestFocus();
+
+        //set date
+        dateView = (TextView) findViewById(R.id.textView3);
+        dateView.setOnClickListener(this);
+
+        calendar = Calendar.getInstance();
+        datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                dateView.setText(dateFormatter.format(newDate.getTime()));
+            }
+
+        },calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
 
         //Populate List of users
         ListView mListView = (ListView) findViewById(R.id.users_scroll_view);
@@ -92,7 +104,7 @@ public class AddTask  extends AppCompatActivity {
                 //clear the conv text
                 clearSelectedConvText();
                 DBHandler dbhandler = new DBHandler(getBaseContext());
-                Task addTask = new Task(selectedUsers.get(0),task_body_txt.getText().toString(),date);
+                Task addTask = new Task(selectedUsers.get(0),dateView.getText().toString(),task_body_txt.getText().toString());
 
                 boolean multipleUsers= false;
                 if (selectedUsers.size()>1){
@@ -146,6 +158,12 @@ public class AddTask  extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onClick(View view){
+        if (view==dateView){
+            datePicker.show();
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
