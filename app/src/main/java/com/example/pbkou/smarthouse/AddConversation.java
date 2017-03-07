@@ -72,6 +72,8 @@ public class AddConversation extends AppCompatActivity {
             String user = users.get(i);
             listItems[i] = user;
         }
+
+
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,listItems);
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
