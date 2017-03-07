@@ -29,5 +29,6 @@
     <string name="task_description">Task Description</string>
     <string name="assign_task">Assign Task</string>
     <string name="date">Date</string>
+    <string name="login">Login</string>
     <string name="add_task">ADD TASK:</string>
 </resources>
