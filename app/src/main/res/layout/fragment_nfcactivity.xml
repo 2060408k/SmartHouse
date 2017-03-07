@@ -1,0 +1,40 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/meow"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.pbkou.smarthouse.NFC.NFCActivityFragment">
+
+
+    <LinearLayout
+        android:id="@+id/linear_layout_nfc_activity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/music_player_activity_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Music Player" />
+
+        <Button
+            android:id="@+id/read_notifications_activity_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Read Notification" />
+
+        <Button
+            android:id="@+id/add_reminder_activity_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Reminders" />
+
+        <LinearLayout
+            android:id="@+id/linear_layout_m"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"></LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

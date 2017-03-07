@@ -1,13 +1,22 @@
 package com.example.pbkou.smarthouse;
 
 
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,10 +32,15 @@ import com.example.pbkou.smarthouse.Database.DBHandler;
 import com.example.pbkou.smarthouse.Database.LoginActivity;
 import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity {
 
     private NfcAdapter mNfcAdapter;
     private TextView mTextView;
+    public static final String MIME_TEXT_PLAIN = "text/plain";
+    public static final String TAG = "NfcDemo";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,34 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        if (!mNfcAdapter.isEnabled()) {
-            mTextView.setText("NFC is disabled.");
-        } else {
-            mTextView.setText(R.string.explanation);
-        }
 
-        handleIntent(this.getIntent());
-    }
-
-    private void handleIntent(Intent intent) {
-        // TODO: handle Intent
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,4 +139,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

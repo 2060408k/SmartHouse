@@ -11,18 +11,19 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
-    <!-- indicates that the app is intended for BLE-capable devices only -->
-    <uses-feature
-        android:name="android.hardware.bluetooth_le"
-        android:required="true" />
 
     <uses-permission android:name="android.permission.NFC" />
 
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
-
+    <!-- indicates that the app is intended for BLE-capable devices only -->
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -37,18 +38,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_tech_filter" />
         </activity>
         <activity
             android:name=".HouseSettings.House_Settings"
@@ -81,6 +70,7 @@
             android:name=".Tasks"
             android:theme="@style/AppTheme.NoActionBar" />
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".notifications"></activity>
         <activity
             android:name=".AddTask"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -93,8 +83,15 @@
         </service>
 
         <activity
-            android:name=".NFCActivity"
+            android:name=".NFC.NFCActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
         </activity>
     </application>
 

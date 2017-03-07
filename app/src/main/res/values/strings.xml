@@ -31,4 +31,11 @@
     <string name="date">Date</string>
     <string name="login">Login</string>
     <string name="add_task">ADD TASK:</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="nfc_start">NFC_START</string>
+    <string name="nfc_activity">NFC_ACTIVITIES</string>
+    <string name="music_player_frag">MUSIC_PLAYER_FRAG</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
