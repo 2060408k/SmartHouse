@@ -67,15 +67,6 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout r_layout = (LinearLayout) findViewById(R.id.content_main);
         r_layout.setPadding(16,actionBarHeight,16,16);
 
-        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.btn_conversations);
-        final Intent intent2 = new Intent(this,Conversations.class);
-        myFab.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startActivity(intent2);
-            }
-        });
-
-
         Button change_activity_btn = (Button) findViewById(R.id.change_activity);
         final Intent change_activity_intent = new Intent(this, LoginActivity.class);
         change_activity_btn.setOnClickListener(new View.OnClickListener() {
@@ -84,8 +75,26 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(change_activity_intent);
             }
         });
+        System.out.println("About to enter tasks");
+        Button tasks_btn = (Button) findViewById(R.id.btn_tasks);
+        tasks_btn.setOnClickListener(new View.OnClickListener(){
 
-    }
+            @Override
+            public void onClick(View v) {
+                Intent tasks_intent = new Intent(v.getContext(), Tasks.class);
+                startActivity(tasks_intent);
+            }
+        });
+        mTextView = (TextView) findViewById(R.id.textView_explanation);
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (mNfcAdapter == null) {
+            // Stop here, we definitely need NFC
+            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+
+        }
 
 
 
@@ -101,8 +110,28 @@ public class MainActivity extends AppCompatActivity {
 
         switch(id) {
             case R.id.house_settings:
-                Intent intent = new Intent(this,House_Settings.class);
-                startActivity(intent);
+                startActivity(new Intent(this,House_Settings.class));
+                break;
+            case R.id.view_conversations:
+                startActivity(new Intent(this,Conversations.class));
+                break;
+            case R.id.activity_notifications:
+                startActivity(new Intent(this,notifications.class));
+                break;
+            case R.id.add_conv_add:
+                startActivity(new Intent(this,AddConversation.class));
+                break;
+            case R.id.activitys:
+                startActivity(new Intent(this,MainActivity.class));
+                break;
+            case R.id.activity_show_tasks:
+                startActivity(new Intent(this,Tasks.class));
+                break;
+            case R.id.activity_room_deciding:
+                startActivity(new Intent(this,RoomDecidingActivity.class));
+                break;
+            case R.id.change_activity:
+                startActivity(new Intent(this,LoginActivity.class));
                 break;
             default:
                 break;

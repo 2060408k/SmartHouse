@@ -30,11 +30,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -42,7 +41,7 @@
         </activity>
         <activity
             android:name=".HouseSettings.House_Settings"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".HouseSettings.Add_BeaconActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -51,17 +50,38 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".HouseSettings.ViewAllBeacons"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Database.LoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RoomDecidingActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Conversations"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ViewOneConversation"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddConversation"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Tasks"
+            android:theme="@style/AppTheme.NoActionBar" />
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".notifications"></activity>
+        <activity
+            android:name=".AddTask"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".notifications" />
+
+        <service android:name=".Database.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".NFC.NFCActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">

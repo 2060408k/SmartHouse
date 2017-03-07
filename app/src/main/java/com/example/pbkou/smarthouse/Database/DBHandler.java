@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.pbkou.smarthouse.Beacon;
 import com.example.pbkou.smarthouse.Message;
 import com.example.pbkou.smarthouse.MessageRecipient;
+import com.example.pbkou.smarthouse.Task;
 import com.example.pbkou.smarthouse.UserGroup;
 import com.example.pbkou.smarthouse.Group;
 
@@ -18,6 +19,7 @@ import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +33,7 @@ import static android.content.ContentValues.TAG;
 
 public class DBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 17;
     private static final String DATABASE_NAME = "beaconDB.db";
     private static final String TABLE_BEACONS = "beacons";
 
@@ -73,6 +75,14 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_F_USER = "userF";
     public static final String COLUMN_F_GROUP = "groupF";
 
+    //Assigned Tasks Table
+    private static final String TABLE_TASKS = "tasks";
+
+    public static final String COLUMN_TASK_ID = "taskId";
+    public static final String COLUMN_TASK_USER = "taskUser";
+    public static final String COLUMN_TASK_DATE = "taskDate";
+    public static final String COLUMN_TASK_BODY = "taskBody";
+
     public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -93,7 +103,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + COLUMN_MESSAGE_ID + " TEXT PRIMARY KEY,"
                 + COLUMN_CREATOR_ID + " TEXT,"
                 + COLUMN_MESSAGE_BODY  + " TEXT,"
-                + COLUMN_CREATE_DATE + "DATE,"
+                + COLUMN_CREATE_DATE + " TEXT,"
                 + COLUMN_PARENT_ID + " TEXT" + ")";
         db.execSQL(CREATE_MESSAGE_TABLE);
 
@@ -101,7 +111,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 TABLE_GROUP + "("
                 + COLUMN_GROUP_ID + " TEXT PRIMARY KEY,"
                 + COLUMN_GROUP_NAME + " TEXT,"
-                + COLUMN_GROUP_CREATEDATE + " DATE" + ")";
+                + COLUMN_GROUP_CREATEDATE + " TEXT" + ")";
         db.execSQL(CREATE_GROUP_TABLE);
 
         String CREATE_USER_GROUP_TABLE = "CREATE TABLE IF NOT EXISTS " +
@@ -121,7 +131,14 @@ public class DBHandler extends SQLiteOpenHelper {
                 + "FOREIGN KEY(" + COLUMN_MESS_ID + ") REFERENCES "+ TABLE_MESSAGES + "("+COLUMN_MESSAGE_ID+")" + ")";
         db.execSQL(CREATE_MESSAGE_RECIPIENT_TABLE);
 
-
+        String CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS " +
+                TABLE_TASKS + "("
+                + COLUMN_TASK_ID + " TEXT PRIMARY KEY,"
+                + COLUMN_TASK_USER + " TEXT,"
+                + COLUMN_TASK_DATE + " TEXT,"
+                + COLUMN_TASK_BODY + " TEXT"
+                + ")";
+        db.execSQL(CREATE_TASKS_TABLE);
     }
 
     @Override
@@ -131,6 +148,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUP);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESS_RECIPIENT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS);
 
         onCreate(db);
     }
@@ -254,6 +272,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @param group Group object
      */
     public void createGroup(Group group) {
+        System.out.println(DATABASE_VERSION);
         ContentValues values = new ContentValues();
         values.put(COLUMN_GROUP_ID, group.getGroupID());
         values.put(COLUMN_GROUP_NAME, group.getName());
@@ -305,14 +324,16 @@ public class DBHandler extends SQLiteOpenHelper {
      * @param message messageRecipient object
      */
     public void createMessage(Message message) {
+        SQLiteDatabase db1 = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_MESSAGE_ID, message.getId());
         values.put(COLUMN_CREATOR_ID, message.getCreator());
         values.put(COLUMN_MESSAGE_BODY, message.getBody());
-        values.put(COLUMN_CREATE_DATE, (message.getCreateDate()).toString());
-        values.put(COLUMN_PARENT_ID, message.getParent());
+        values.put(COLUMN_CREATE_DATE, message.getCreateDate());
+        System.out.println("Message Date: "+ message.getCreateDate());
 
+        values.put(COLUMN_PARENT_ID, message.getParent());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -331,9 +352,6 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
-
-
-
 
         ArrayList<String> out = new ArrayList<String>();
 
@@ -384,7 +402,25 @@ public class DBHandler extends SQLiteOpenHelper {
         }
         return out;
     }
+    public ArrayList<Group> getAllConvNoUsers(){
+        String query = "Select * FROM " + TABLE_GROUP ;
 
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<Group> out = new ArrayList<>();
+
+        try {
+            while (cursor.moveToNext()) {
+                Group group = new Group();
+                group.setGroupID(cursor.getString(0));
+                group.setName(cursor.getString(1));
+                out.add(group);
+            }
+        } finally {
+            cursor.close();
+        }
+        return out;
+    }
     public boolean deleteGroup(Group group) {
 
         boolean result = false;
@@ -410,76 +446,123 @@ public class DBHandler extends SQLiteOpenHelper {
         return result;
     }
 
-    public ArrayList<Message> getMessagesOfGroup(Group g){
+    public void DeleteMessagesOfGroup(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("delete from "+ TABLE_MESSAGES);
+        db.execSQL("delete from "+ TABLE_MESS_RECIPIENT);
+
+    }
+    public ArrayList<MessageRecipient> getMessagesOfGroup(Group g){
         String query = "Select * FROM " + TABLE_MESS_RECIPIENT +" Where groupID= \""+ g.getGroupID()+"\"";
 
         SQLiteDatabase db = this.getWritableDatabase();
 
+        ArrayList<MessageRecipient> msRec = new ArrayList<MessageRecipient>();
         Cursor cursor = db.rawQuery(query, null);
-        ArrayList<Message> msgIDS = new ArrayList<Message>();
         try {
             while (cursor.moveToNext()) {
                 MessageRecipient msgR = new MessageRecipient();
                 msgR.setId(cursor.getString(0));
                 msgR.setGroup(cursor.getString(1));
-                System.out.println("Group: " + msgR.getGroup());
                 msgR.setMessage(cursor.getString(2));
-                System.out.println("MessageID: " +msgR.getMessage());
-                msgIDS.add(getMessage(msgR.getMessage()));
+                msRec.add(msgR);
             }
         } finally {
             cursor.close();
         }
-        System.out.println(msgIDS);
-        return msgIDS;
+        return msRec;
     }
 
-    private Message getMessage(String msgR) {
-        String query = "Select * FROM " + TABLE_MESSAGES ;
+    public void printMessageTable(){
+        String query = "Select * FROM " + TABLE_MESSAGES;
         SQLiteDatabase db = this.getWritableDatabase();
-        Message message = null;
+        Cursor cursor = db.rawQuery(query, null);
 
-        try (Cursor cursor = db.rawQuery(query, null)) {
-            System.out.println("Query length: " + cursor.getCount());
+        try {
+            while (cursor.moveToNext()) {
+                Message message = new Message();
+                message.setId(cursor.getString(0));
+                message.setCreator(cursor.getString(1));
+                message.setBody(cursor.getString(2));
+                message.setCreateDate(cursor.getString(3));
+                message.setParent(cursor.getString(4));
+            }
+        } finally {
+            cursor.close();
+        }
+    }
 
+    public void printMessageRecipientTable(){
+        String query = "Select * FROM " + TABLE_MESSAGES;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        try {
+            while (cursor.moveToNext()) {
+                MessageRecipient msgR = new MessageRecipient();
+                msgR.setId(cursor.getString(0));
+                msgR.setGroup(cursor.getString(1));
+                msgR.setMessage(cursor.getString(2));
+                //System.out.println("Message Recipient Table Content: -Group: " + msgR.getGroup() +"- Message: "+ msgR.getMessage() );
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+    public Message getMessageFromRecipient(String msgR) {
+
+        String query = "Select * FROM " + TABLE_MESSAGES + " Where id= \"" + msgR + "\"";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Message message = new Message();
+        Cursor cursor = db.rawQuery(query, null);
+        try {
             while (cursor.moveToNext()) {
                 message = new Message();
                 message.setId(cursor.getString(0));
                 message.setCreator(cursor.getString(1));
                 message.setBody(cursor.getString(2));
-                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-                Date startDate = df.parse(cursor.getString(3));
-                message.setCreateDate(startDate);
+                message.setCreateDate(cursor.getString(3));
                 message.setParent(cursor.getString(4));
-                System.out.println("Message body: "+message.getBody());
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } finally {
+            cursor.close();
         }
-//        String query = "Select * FROM " + TABLE_MESSAGES + " Where id= \" " + msgR + "\"";
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        Message message = null;
-//        try (Cursor cursor = db.rawQuery(query, null)) {
-//            System.out.println("Query length: " + cursor.getCount());
-//
-//            while (cursor.moveToNext()) {
-//                message = new Message();
-//                message.setId(cursor.getString(0));
-//                message.setCreator(cursor.getString(1));
-//                System.out.println("Message: " +message.getCreator());
-//                message.setBody(cursor.getString(2));
-//                System.out.println("Message: " +message.getBody());
-//                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-//                Date startDate = df.parse(cursor.getString(3));
-//                message.setCreateDate(startDate);
-//                System.out.println("Date before format: " +cursor.getString(3));
-//                System.out.println("Date after format: " +message.getCreateDate());
-//                message.setParent(cursor.getString(4));
-//            }
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
         return message;
     }
 
+    public ArrayList<Task> getAllTasks() {
+
+        String query = "Select * FROM " + TABLE_TASKS ;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Task> tasks = new ArrayList<Task>();
+        Cursor cursor = db.rawQuery(query, null);
+        try {
+            while (cursor.moveToNext()) {
+                Task task = new Task();
+                task.setTaskId(cursor.getString(0));
+                task.setUser(cursor.getString(1));
+                task.setDate(cursor.getString(2));
+                task.setBody(cursor.getString(3));
+                tasks.add(task);
+            }
+        } finally {
+            cursor.close();
+        }
+        return tasks;
+    }
+
+    public void createTask(Task task) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TASK_ID, task.getTaskId());
+        values.put(COLUMN_TASK_USER, task.getUser());
+        values.put(COLUMN_TASK_DATE, task.getDate());
+        values.put(COLUMN_TASK_BODY, task.getBody());
+
+        db.insert(TABLE_TASKS, null, values);
+        db.close();
+
+    }
 }

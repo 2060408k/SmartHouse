@@ -20,7 +20,17 @@
     <string name="delete_beacon_dialog_title">Do you want to delete this beacon ?</string>
     <string name="delete_conversation">Do you want to delete this conversation ?</string>
     <string name="change_activity">Change Activity</string>
+    <string name="btn_tasks">Tasks</string>
+
     <string name="explanation">Enabled</string>
+    <string name="my_assigned_tasks">My Assigned Tasks</string>
+    <string name="all_tasks">All Tasks</string>
+    <string name="my_tasks">My Tasks</string>
+    <string name="task_description">Task Description</string>
+    <string name="assign_task">Assign Task</string>
+    <string name="date">Date</string>
+    <string name="login">Login</string>
+    <string name="add_task">ADD TASK:</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="nfc_start">NFC_START</string>

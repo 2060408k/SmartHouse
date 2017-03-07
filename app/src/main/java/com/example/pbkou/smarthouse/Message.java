@@ -12,18 +12,18 @@ public class Message {
     private String id= UUID.randomUUID().toString();
     private String creator;
     private String body;
-    private java.util.Date createDate;
+    private String createDate;
     private String parent;
 
     public Message(){
         this.creator="";
         this.body="";
-        this.createDate= new java.util.Date();
+        this.createDate= "";
         this.parent="";
 
     }
 
-    public Message(String creator, String body, java.util.Date date, String parent){
+    public Message(String creator, String body, String date, String parent){
         this.creator=creator;
         this.body=body;
         this.createDate= date;
@@ -54,11 +54,11 @@ public class Message {
         this.body = body;
     }
 
-    public java.util.Date getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(java.util.Date createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 
