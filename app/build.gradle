@@ -45,4 +45,13 @@ dependencies {
 dependencies {
     compile 'com.google.firebase:firebase-messaging:10.2.0'
 }
+dependencies {
+    compile 'com.android.support:support-v4:25.+'
+}
+dependencies {
+    compile 'com.android.support:support-v4:25.+'
+}
+dependencies {
+    compile 'com.android.support:support-v4:25.+'
+}
 apply plugin: 'com.google.gms.google-services'
