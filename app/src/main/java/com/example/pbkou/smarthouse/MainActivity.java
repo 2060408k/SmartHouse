@@ -123,12 +123,28 @@ public class MainActivity extends AppCompatActivity {
 
         switch(id) {
             case R.id.house_settings:
-                Intent intent = new Intent(this,House_Settings.class);
-                startActivity(intent);
+                startActivity(new Intent(this,House_Settings.class));
                 break;
             case R.id.view_conversations:
-                Intent intent2 = new Intent(this,Conversations.class);
-                startActivity(intent2);
+                startActivity(new Intent(this,Conversations.class));
+                break;
+            case R.id.activity_notifications:
+                startActivity(new Intent(this,notifications.class));
+                break;
+            case R.id.add_conv_add:
+                startActivity(new Intent(this,AddConversation.class));
+                break;
+            case R.id.activitys:
+                startActivity(new Intent(this,MainActivity.class));
+                break;
+            case R.id.activity_show_tasks:
+                startActivity(new Intent(this,Tasks.class));
+                break;
+            case R.id.activity_room_deciding:
+                startActivity(new Intent(this,RoomDecidingActivity.class));
+                break;
+            case R.id.change_activity:
+                startActivity(new Intent(this,LoginActivity.class));
                 break;
             default:
                 break;
