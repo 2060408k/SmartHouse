@@ -207,8 +207,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void subscribeToPushService() {
-        FirebaseMessaging.getInstance().subscribeToTopic("news");
     private void loadData(){
         final DatabaseReference mDatabase = FirebaseDatabase
                 .getInstance()
@@ -255,6 +253,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void subscribeToPushService() {
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
         Log.d("AndroidBash", "Subscribed");
         Toast.makeText(MainActivity.this, "Subscribed", Toast.LENGTH_SHORT).show();
 
