@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "491188911205",
+    "firebase_url": "https://smarthouse-76404.firebaseio.com",
+    "project_id": "smarthouse-76404",
+    "storage_bucket": "smarthouse-76404.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491188911205:android:289ec50ada2c185f",
+        "android_client_info": {
+          "package_name": "com.example.pbkou.smarthouse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491188911205-8ieulps1261a4t9tlm82q5a6lmn31val.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pbkou.smarthouse",
+            "certificate_hash": "252fad289c6a4b268e6ade1a44cb071c1a512399"
+          }
+        },
+        {
+          "client_id": "491188911205-d9i1aek8rka18p1govglklgm1aofk9kn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pbkou.smarthouse",
+            "certificate_hash": "5a850dd5952914e3fe068cfdbd63e0193b411fdb"
+          }
+        },
+        {
+          "client_id": "491188911205-8n3m8cp7jrvirmivodajmvkphqmh3hac.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8K0MawvJgD20Py3V8nOMs5pjc99BWLK8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491188911205-8n3m8cp7jrvirmivodajmvkphqmh3hac.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
