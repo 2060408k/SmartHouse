@@ -16,8 +16,8 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        android:theme="@style/AppTheme"
+       />
 
     <EditText
         android:layout_width="match_parent"
@@ -28,20 +28,21 @@
         android:id="@+id/add_conv_name" />
 
 
-
-        <ListView
-            android:id="@+id/users_scroll_view"
-            android:layout_width="match_parent"
-            android:layout_height="192dp"
-            android:orientation="vertical" />
+    <ListView
+        android:id="@+id/users_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="192dp"
+        android:background="@drawable/rounded_circle"
+        android:orientation="vertical" />
 
     <ListView
         android:id="@+id/selected_users_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="167dp"
+        android:background="@drawable/lightbox"
         android:orientation="vertical" />
 
-    <Button
+    <Button style="@style/Widget.AppCompat.Button.Colored"
         android:text="Add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

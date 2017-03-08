@@ -4,12 +4,15 @@ package com.example.pbkou.smarthouse;
 import android.*;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -19,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -53,7 +57,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity  {
 
     private NfcAdapter mNfcAdapter;
     private TextView mTextView;
@@ -67,6 +71,35 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private String user_id="";
     private String house_num="";
     private HashMap<String,String> users_locations = new HashMap<String,String>();
+    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private final static int REQUEST_ENABLE_BT=1;
+    private LocationManager lm;
+    private Location location;
+
+
+    private final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            SharedPreferences.Editor editor =  preferences.edit();
+            editor.putString("latitude_dbl",location.getLatitude()+"");
+            editor.putString("longitude_dbl",location.getLongitude()+"");
+            editor.commit();
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +121,29 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         }
 
-
         //Get the preference manager
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        //location
+        lm = (LocationManager)getSystemService(getBaseContext().LOCATION_SERVICE);
+        location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        SharedPreferences.Editor editor =  preferences.edit();
+        String lat =location.getLatitude()+"";
+        String lon = location.getLongitude()+"";
+        System.out.println(lat + lon);
+        editor.putString("latitude_dbl",lat);
+        editor.putString("longitude_dbl",lon);
+        editor.commit();
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
+
+        //ask for bluetooth
+        if(!mBluetoothAdapter.isEnabled())
+        {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+
 
         //get user name
         user_name = preferences.getString("user_name","");
@@ -234,28 +287,46 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 firebase_data = (HashMap) dataSnapshot.getValue();
+
                 for (DataSnapshot childSnap : dataSnapshot.getChildren()) {
                     String loc = (String)childSnap.child("location").getValue();
                     String name = (String)childSnap.child("name").getValue();
                     users_locations.put(name,loc);
                 }
+
                 LinearLayout ll = (LinearLayout) findViewById(R.id.home_ll);
+
                 for (Map.Entry<String, String> entry : users_locations.entrySet())
                 {
-
                     TextView tv = new TextView(getBaseContext());
-                    tv.setText(entry.getKey()+"  "+ entry.getValue());
+                    String text = entry.getKey()+"";
+                    if(entry == null || entry.getValue()==null || entry.getKey()==null ) continue;
+                    if (entry!=null && entry.getValue()!=null && !entry.getValue().contains("_")) text = entry.getKey()+"  "+ entry.getValue();
+                    tv.setText(text);
                     tv.setTextSize(16);
                     tv.setLayoutParams(new ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
-                    if (entry.getValue().equals("Absent")){
+                    if (entry!=null && entry.getValue()!=null && (entry.getValue().equals("Absent") ||  entry.getValue().contains("_"))){
                         tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_3_black_24dp, 0, 0, 0);
                     }else{
                         tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_2_black_24dp, 0, 0, 0);
                     }
                     ll.addView(tv);
                     System.out.println(entry.getKey() + "/" + entry.getValue());
+                    if(entry!=null && entry.getValue()!=null && entry.getValue().contains("_")){
+                        final String loc =entry.getValue();
+                        tv.setTextColor(Color.BLUE);
+                        tv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(getBaseContext(),MapActivity.class);
+                                intent.putExtra("USER_LOCATION",loc);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+
                 }
 
 
@@ -270,18 +341,5 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
 
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
 }

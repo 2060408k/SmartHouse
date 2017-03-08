@@ -31,6 +31,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         >
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBN0g7Y7ypNnZw8jhsuTfWwf0AS2Z4UwhQ"/>
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -68,6 +71,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Tasks"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MapActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".notifications" />

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_room_deciding"
     android:layout_width="match_parent"
@@ -27,13 +28,20 @@
             android:layout_height="wrap_content"
             android:indeterminate="true" />
     </RelativeLayout>
-    <Button
+    <Button style="@style/Widget.AppCompat.Button.Colored"
         android:text="Join House"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/join_house_btn" />
 
-    <Button
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:srcCompat="@mipmap/ic_room" />
+
+    <Button style="@style/Widget.AppCompat.Button.Colored"
         android:text="Create House"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

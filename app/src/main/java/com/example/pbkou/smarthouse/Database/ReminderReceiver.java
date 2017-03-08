@@ -58,75 +58,84 @@ public class ReminderReceiver extends BroadcastReceiver {
     private String[] current_beacon={" ", "-1000"};
     public ReminderReceiver(){
 
-        //Get the preference manager
 
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        System.out.println("onReceive");
         this.context=context;
-
+        //start scanning
         startScanningBles();
 
     }
 
     public void startScanningBles(){
+
+        //get bluetooth manager
         final BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         bleDev = bluetoothManager.getAdapter();
-        if (bleDev == null || !bleDev.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 
-            ((AppCompatActivity)context).startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
-
-        System.out.println("startScanningBles");
-        if(scanner == null) {
-            scanner = bleDev.getBluetoothLeScanner();
+        //get bluetooth permissions
+        if (bleDev != null && bleDev.isEnabled()) {
+            //set a bluetoothscanner
             if(scanner == null) {
-                // probably tried to start a scan without granting Bluetooth permission
-                return;
+                scanner = bleDev.getBluetoothLeScanner();
+                if(scanner == null) {
+                    // probably tried to start a scan without granting Bluetooth permission
+                    return;
+                }
             }
-        }
-        isScanning = true;
-        List<ScanFilter> filters = new ArrayList<>();
-        ScanSettings settings = new ScanSettings.Builder().setScanMode(scanMode).build();
-        scanner.startScan(filters, settings, bleScanCallback);
 
-        Thread t=new Thread()
-        {
-            public void run()
+            //start scanning
+            isScanning = true;
+            List<ScanFilter> filters = new ArrayList<>();
+            ScanSettings settings = new ScanSettings.Builder().setScanMode(scanMode).build();
+            scanner.startScan(filters, settings, bleScanCallback);
+
+            //give 20 seconds for the scanner to look for beacons
+            Thread t=new Thread()
             {
-                try{
-                    sleep(1000*20);
-                }
-                catch(Exception e)
+                public void run()
                 {
-                    e.printStackTrace();
+                    try{
+                        sleep(1000*20);
+                    }
+                    catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                    finally
+                    {
+                        stopScan();
+                    }
                 }
-                finally
-                {
-                    stopScan();
-                }
-            }
-        };
-        t.start();
+            };
+            t.start();
+        }else {
+            stopScan();
+        }
+
+
 
 
     }
 
     private void stopScan() {
-        System.out.println("stopping scan");
+        //stop the scanner
         if(scanner != null && isScanning) {
             scanner.stopScan(bleScanCallback);
             isScanning=false;
         }
 
+        //get database and all beacons
         DBHandler dbhandler = new DBHandler(context);
         ArrayList<Beacon> beacons =dbhandler.getAllBeacons();
 
+        //iterate beacons
         for (Beacon beacon : beacons){
+            //check if we found a beacon with same address
             if (active_beacon_list.containsKey(beacon.getAddress())){
+                //update the current beacon
                 if (current_beacon==null) {
                     current_beacon[0]=beacon.getAddress();
                     current_beacon[1]=active_beacon_list.get(beacon.getAddress()).toString();
@@ -140,13 +149,32 @@ public class ReminderReceiver extends BroadcastReceiver {
 
             }
         }
+        //get users data
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         user_id=preferences.getString("user","");
         user_name=preferences.getString("user_name","");
         house_num=preferences.getString("house_num","");
 
+        //make sure data  are not empty
         if(user_name.isEmpty() || user_id.isEmpty() || house_num.isEmpty() ) return;
+
+        //if we didn't update the current beacon then we are absent
         if(current_beacon[0].equals(" ")) current_beacon[0]="Absent";
+
+        //if it's absent check if we have location data
+        if (current_beacon[0].equals("Absent")){
+
+            String latitude = preferences.getString("latitude_dbl","");
+            String longitude = preferences.getString("longitude_dbl","");
+            System.out.println("lat :"+latitude+" long : "+longitude);
+            //if we have add them
+            if(!latitude.isEmpty() && !longitude.isEmpty()){
+                current_beacon[0]=latitude+"_"+longitude;
+            }
+
+        }
+
+        //add result
         mDatabase.child("house_numbers").child(house_num).child("users").child(user_id).child("location").setValue(current_beacon[0]);
 
 
@@ -166,7 +194,6 @@ public class ReminderReceiver extends BroadcastReceiver {
                 String name = dev.getName();
                 String address = dev.getAddress();
                 if(!active_beacon_list.containsKey(address)) active_beacon_list.put(address,new Integer(rssi));
-                System.out.println(address +" " + rssi);
             }
         }
 
