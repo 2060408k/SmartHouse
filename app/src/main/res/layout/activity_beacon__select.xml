@@ -14,15 +14,16 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-    <Button
+/>
+    <Button style="@style/Widget.AppCompat.Button.Colored"
         android:text="Toggle Scan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btnToggleScan" />
+
     <ListView
+        android:id="@+id/beacon_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/beacon_list" />
+        android:background="@drawable/lightbox" />
 </LinearLayout>

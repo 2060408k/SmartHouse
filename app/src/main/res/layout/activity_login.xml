@@ -85,7 +85,7 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <Button
+            <Button style="@style/Widget.AppCompat.Button.Colored"
                 android:id="@+id/sign_out_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                 android:text="@string/google_sign_out"
                 android:theme="@style/ThemeOverlay.MyDarkButton" />
 
-            <Button
+            <Button style="@style/Widget.AppCompat.Button.Colored"
                 android:id="@+id/disconnect_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
