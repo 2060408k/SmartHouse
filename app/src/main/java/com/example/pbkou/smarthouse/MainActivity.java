@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -51,7 +53,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private NfcAdapter mNfcAdapter;
     private TextView mTextView;
@@ -147,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(tasks_intent);
             }
         });
-        mTextView = (TextView) findViewById(R.id.textView_explanation);
+
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         if (mNfcAdapter == null) {
@@ -209,6 +211,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void subscribeToPushService() {
         FirebaseMessaging.getInstance().subscribeToTopic("news");
+
+
+        Log.d("AndroidBash", "Subscribed");
+        Toast.makeText(MainActivity.this, "Subscribed", Toast.LENGTH_SHORT).show();
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+        // Log and toast
+        Log.d("AndroidBash", token);
+        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+    }
+
     private void loadData(){
         final DatabaseReference mDatabase = FirebaseDatabase
                 .getInstance()
@@ -255,13 +269,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-        Log.d("AndroidBash", "Subscribed");
-        Toast.makeText(MainActivity.this, "Subscribed", Toast.LENGTH_SHORT).show();
+    @Override
+    public void onLocationChanged(Location location) {
 
-        String token = FirebaseInstanceId.getInstance().getToken();
+    }
 
-        // Log and toast
-        Log.d("AndroidBash", token);
-        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }
