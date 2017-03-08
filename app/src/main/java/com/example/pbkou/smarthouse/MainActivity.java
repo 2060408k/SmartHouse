@@ -156,6 +156,7 @@ public class MainActivity extends AppCompatActivity  {
             TextView hello_tv = (TextView) findViewById(R.id.hello_tv);
             hello_tv.setText("Hello "+user_name);
             hello_tv.setTextSize(32);
+
             clservice=new CurrentLocationService();
             clservice.startUpdatingCurrentLocation(this);
         }
