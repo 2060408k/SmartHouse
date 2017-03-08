@@ -57,6 +57,10 @@ public class RoomDecidingActivity extends AppCompatActivity {
         final String user = sharedPref.getString("user","");
         final String user_name = sharedPref.getString("user_name","");
 
+        //try get house
+        String house_num = preferences.getString("house_num","");
+        if (!user.isEmpty() && !user_name.isEmpty() && !house_num.isEmpty()) joinHouseAuto();
+
         //load data
         loadData();
 
@@ -320,6 +324,11 @@ public class RoomDecidingActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void joinHouseAuto(){
+        Intent intent = new Intent(getBaseContext(),MainActivity.class);
+        startActivity(intent);
     }
 
 }

@@ -1,21 +1,23 @@
 package com.example.pbkou.smarthouse;
 
-/**
- * Created by pbkou on 03/03/2017.
- */
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class NotificationService extends NotificationListenerService {
 
     private String TAG = this.getClass().getSimpleName();
     private NLServiceReceiver nlservicereciver;
+    public ArrayList<String> nots = new ArrayList<String>();
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -33,23 +35,21 @@ public class NotificationService extends NotificationListenerService {
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
+        Bundle extras = sbn.getNotification().extras;
 
-        Log.i(TAG,"**********  onNotificationPosted");
-        Log.i(TAG,"ID :" + sbn.getId() + "\t" + sbn.getNotification().tickerText + "\t" + sbn.getPackageName());
-        Intent i = new  Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
-        i.putExtra("notification_event","onNotificationPosted :" + sbn.getPackageName() + "\n");
-        sendBroadcast(i);
-
+        String title = extras.getString("android.title");
+        String text = extras.getCharSequence("android.text").toString();
+        nots.add(title +" "+ text);
     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        Log.i(TAG,"********** onNOtificationRemoved");
-        Log.i(TAG,"ID :" + sbn.getId() + "\t" + sbn.getNotification().tickerText +"\t" + sbn.getPackageName());
-        Intent i = new  Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
-        i.putExtra("notification_event","onNotificationRemoved :" + sbn.getPackageName() + "\n");
-
-        sendBroadcast(i);
+//        Log.i(TAG,"********** onNOtificationRemoved");
+//        Log.i(TAG,"ID :" + sbn.getId() + "\t" + sbn.getNotification().tickerText +"\t" + sbn.getPackageName());
+//        Intent i = new  Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
+//        i.putExtra("notification_event","onNotificationRemoved :" + sbn.getPackageName() + "\n");
+//
+//        sendBroadcast(i);
     }
 
     class NLServiceReceiver extends BroadcastReceiver{
@@ -66,7 +66,7 @@ public class NotificationService extends NotificationListenerService {
                 int i=1;
                 for (StatusBarNotification sbn : NotificationService.this.getActiveNotifications()) {
                     Intent i2 = new  Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
-                    i2.putExtra("notification_event",i +" " + sbn.getPackageName() + "\n");
+                    i2.putExtra("notification_event",i +" " + sbn.getTag() + "\n");
                     sendBroadcast(i2);
                     i++;
                 }
@@ -79,4 +79,7 @@ public class NotificationService extends NotificationListenerService {
         }
     }
 
+    public ArrayList<String> getNots() {
+        return nots;
+    }
 }
