@@ -269,12 +269,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         });
     }
 
-    private void subscribeToPushService() {
-        FirebaseMessaging.getInstance().subscribeToTopic("news");
-        Log.d("AndroidBash", "Subscribed");
-        Toast.makeText(MainActivity.this, "Subscribed", Toast.LENGTH_SHORT).show();
-
-    }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {

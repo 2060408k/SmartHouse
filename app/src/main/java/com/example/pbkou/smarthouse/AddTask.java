@@ -28,6 +28,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,8 +55,11 @@ public class AddTask  extends AppCompatActivity implements View.OnClickListener 
     private Calendar calendar;
     private DatePickerDialog datePicker;
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
-
-    private int year, month, day;
+    HashMap userID_userName = new HashMap();
+    private String userid;
+    // Method to send Notifications from server to client end.
+    public final static String AUTH_KEY_FCM = "\"AAAAcl0j_GU:APA91bG-8tp0Shi-WIIbSwnFod_H7UV3vMG-3IxEKQ3dzgPHfMYSiIxxVlDXU7-gl7WIOjp2HWcLukYoYdrTNw_IIYBCzvr5Pg1_Zkjtu4ZG7Vue7nchq96x_WPWx9Tz0tuZ8XsPOYxB\";";
+    public final static String API_URL_FCM = "https://fcm.googleapis.com/fcm/send";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +68,13 @@ public class AddTask  extends AppCompatActivity implements View.OnClickListener 
         //Get the preference manager
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String houseNum = preferences.getString("house_num","");
+        //get database reference
+        mDatabase= FirebaseDatabase.getInstance()
+                .getReference()
+                .child("house_numbers")
+                .child(houseNum.toString());
+        final String user = preferences.getString("user","");
+        final String userName = preferences.getString("user_name","");
         System.out.println(houseNum);
         loadData(houseNum);
 
@@ -85,29 +100,6 @@ public class AddTask  extends AppCompatActivity implements View.OnClickListener 
 
         },calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
-
-//        //Populate List of users
-//        ListView mListView = (ListView) findViewById(R.id.users_scroll_view);
-//        final ArrayList<String> users = new ArrayList<String>();
-//        users.add("User1");
-//        users.add("User2");
-//        users.add("User3");
-//        String[] listItems = new String[users.size()];
-//        for (int i=0; i<users.size(); i++){
-//            String user = users.get(i);
-//            listItems[i] = user;
-//        }
-//        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,listItems);
-//        mListView.setAdapter(adapter);
-//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                String entry = parent.getAdapter().getItem(position).toString();
-//                selectedUsers.add(entry);
-//                updateSelectedUsers();
-//            }
-//        });
-
         //add btn
         Button add_btn= (Button) findViewById(R.id.add_task_btn);
         add_btn.setOnClickListener(new View.OnClickListener() {
@@ -119,11 +111,35 @@ public class AddTask  extends AppCompatActivity implements View.OnClickListener 
                 Task addTask = new Task(selectedUsers.get(0),dateView.getText().toString(),task_body_txt.getText().toString());
 
                 boolean multipleUsers= false;
-                if (selectedUsers.size()>1){
+                if (selectedUsers.size()>2){
                     multipleUsers=true;
                 }
                 if (!multipleUsers ){
                     dbhandler.createTask(addTask);
+                    //Add into user's tasks_to
+
+                    mDatabase.child("users").child(user).child("tasks_to").child(addTask.getTaskId()).child("user_to").setValue(addTask.getUser());
+                    mDatabase.child("users").child(user).child("tasks_to").child(addTask.getTaskId()).child("body").setValue(addTask.getBody());
+                    mDatabase.child("users").child(user).child("tasks_to").child(addTask.getTaskId()).child("date").setValue(addTask.getDate());
+                    //Add into user task_from
+                    Iterator it = userID_userName.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry pair = (Map.Entry)it.next();
+                        if (pair.getValue().toString().equals(selectedUsers.get(0))){
+                            userid =  pair.getKey().toString();
+                        }
+                        it.remove(); // avoids a ConcurrentModificationException
+                    }
+                    mDatabase.child("users").child(userid).child("tasks_from").child(addTask.getTaskId()).child("user_from").setValue(userName);
+                    mDatabase.child("users").child(userid).child("tasks_from").child(addTask.getTaskId()).child("body").setValue(addTask.getBody());
+                    mDatabase.child("users").child(userid).child("tasks_from").child(addTask.getTaskId()).child("date").setValue(addTask.getDate());
+
+                    try {
+                        pushFCMNotification("eBkd8XkY7bo:APA91bF5aIdEH7uK0f8XiUBYHnemEwry6LmoPz0tUlRGDeQgZ7pzV1HzXzTYh6fIoJNisP686c0PQXbGMC0WcMpyczuxwR3FcRosI8ZDaboFpAR_EMeV2p0KeGlbwdNEbVA53CuKS_yQ","en na pellano","Dulepse");
+                    } catch (Exception e) {
+                        System.out.println("***********");
+                        e.printStackTrace();
+                    }
                     onBackPressed();
                     Intent intent = new Intent(AddTask.this, Tasks.class );
                     startActivity(intent);
@@ -221,12 +237,13 @@ public class AddTask  extends AppCompatActivity implements View.OnClickListener 
                 final ArrayList<String> users = new ArrayList<String>();
                 while (it.hasNext()) {
                     Map.Entry pair = (Map.Entry) it.next();
-                    System.out.println(pair.getKey() + " = " + pair.getValue());
+                    String userid=pair.getKey().toString();
                     Iterator it2 = ((HashMap) pair.getValue()).entrySet().iterator();
                     while (it2.hasNext()) {
                         Map.Entry pair2 = (Map.Entry) it2.next();
                         if (pair2.getKey().toString().equals("name")){
                             users.add(pair2.getValue().toString());
+                            userID_userName.put(userid,pair2.getValue().toString());
                         }
                         it2.remove();
                     }
@@ -255,5 +272,34 @@ public class AddTask  extends AppCompatActivity implements View.OnClickListener 
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    public static void pushFCMNotification(String userDeviceIdKey, String title, String body) throws     Exception{
+
+        String authKey = AUTH_KEY_FCM;   // You FCM AUTH key
+        String FMCurl = API_URL_FCM;
+        String hardCodedDeviceID ="cC7AND15MLQ:APA91bFGw2o1FW026L73urboc9r3XJVnnLnQacR1rgnCa0C4x5ecHdoXyah6uHV8QyuQzy4u3wb8d7i6H5C232i5FiQPj6QX9F_zjkqeMMk_2aUBCKbY41BpPwPIfL8k3SIzLDfbEtQi";
+        URL url = new URL(FMCurl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setUseCaches(false);
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization","key="+authKey);
+        conn.setRequestProperty("Content-Type","application/json");
+
+        JSONObject json = new JSONObject();
+        json.put("to",userDeviceIdKey);
+        JSONObject info = new JSONObject();
+        info.put("title", title);   // Notification title
+        info.put("body", body); // Notification body
+        json.put("notification", info);
+
+        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+        wr.write(json.toString());
+        wr.flush();
+        conn.getInputStream();
     }
 }
