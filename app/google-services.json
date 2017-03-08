@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "491188911205-8ieulps1261a4t9tlm82q5a6lmn31val.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pbkou.smarthouse",
+            "certificate_hash": "252fad289c6a4b268e6ade1a44cb071c1a512399"
+          }
+        },
+        {
           "client_id": "491188911205-d9i1aek8rka18p1govglklgm1aofk9kn.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -27,7 +35,11 @@
           "client_type": 3
         }
       ],
-      "api_key": [{ "current_key": "AIzaSyCNaVj28sqnozHtwgziTtuCKQIcBIJ49Jk" } ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8K0MawvJgD20Py3V8nOMs5pjc99BWLK8"
+        }
+      ],
       "services": {
         "analytics_service": {
           "status": 1

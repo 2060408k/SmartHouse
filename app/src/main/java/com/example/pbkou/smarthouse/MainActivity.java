@@ -43,6 +43,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -115,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         Integer room_num = intent.getIntExtra("room_num", 0);
 
         //Test start database
+        subscribeToPushService();
         DBHandler handler = new DBHandler(getBaseContext());
         //Set content_main padding
         int actionBarHeight = 0;
@@ -144,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(tasks_intent);
             }
         });
-
+        mTextView = (TextView) findViewById(R.id.textView_explanation);
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         if (mNfcAdapter == null) {
@@ -199,6 +202,13 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
+
+
+
+    private void subscribeToPushService() {
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
     private void loadData(){
         final DatabaseReference mDatabase = FirebaseDatabase
                 .getInstance()
@@ -245,4 +255,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+        Log.d("AndroidBash", "Subscribed");
+        Toast.makeText(MainActivity.this, "Subscribed", Toast.LENGTH_SHORT).show();
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+        // Log and toast
+        Log.d("AndroidBash", token);
+        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+    }
 }
