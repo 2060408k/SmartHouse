@@ -31,6 +31,8 @@ import android.widget.Toast;
 import com.example.pbkou.smarthouse.Database.DBHandler;
 import com.example.pbkou.smarthouse.Database.LoginActivity;
 import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(room_num);
 
         //Test start database
+        subscribeToPushService();
         DBHandler handler = new DBHandler(getBaseContext());
         //Set content_main padding
         int actionBarHeight = 0;
@@ -140,5 +143,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void subscribeToPushService() {
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
 
+        Log.d("AndroidBash", "Subscribed");
+        Toast.makeText(MainActivity.this, "Subscribed", Toast.LENGTH_SHORT).show();
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+        // Log and toast
+        Log.d("AndroidBash", token);
+        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+    }
 }

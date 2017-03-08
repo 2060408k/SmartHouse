@@ -70,8 +70,8 @@ public class Conversations extends AppCompatActivity {
         //Get current user name
         SharedPreferences preferences;
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String user = preferences.getString("user","");
-        System.out.println(user);
+        String user = preferences.getString("user_name","");
+        System.out.println("User: "+ user.toString());
         int index=1;
         boolean flag=false;
         for (Map<Group, ArrayList> conv : all_conversations) {
@@ -79,12 +79,15 @@ public class Conversations extends AppCompatActivity {
             for (final Map.Entry<Group, ArrayList> entry : temp_group.entrySet()) {
                 //Check if this conversation contains the signed in user
                 for (int i = 0; i < entry.getValue().size(); i++) {
-                    if (entry.getValue().get(i) == user) {
+                    System.out.println("Hashmap value: "+ entry.getValue().get(i).toString());
+                    if (entry.getValue().get(i).toString().equals(user.toString())) {
+                        System.out.println("condition: "+entry.getValue().get(i).toString().equals(user.toString()));
                         flag = true;
                     }
                 }
+
                 //TODO: uncomment above section and set flag to true in order to show conversations of signed in user
-                if (flag == false) {
+                if (flag == true) {
                     TextView tv = new TextView(this);
                     String content = entry.getKey().getName() + "\n";
                     for (int i = 0; i < entry.getValue().size(); i++) {

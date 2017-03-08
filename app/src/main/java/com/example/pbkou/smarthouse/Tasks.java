@@ -65,10 +65,15 @@ public class Tasks extends AppCompatActivity {
 
         DBHandler dbhandler = new DBHandler(getBaseContext());
         ListView mListView = (ListView)findViewById(R.id.tasks_scroll_view);
+        SharedPreferences preferences;
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String user = preferences.getString("user_name","");
         final ArrayList<Task> allTasks = dbhandler.getAllTasks();
         final ArrayList<String> content = new ArrayList<String>();
         for (int i=0; i<allTasks.size(); i++){
-            content.add(allTasks.get(i).getBody()+" - "+ allTasks.get(i).getDate() + " - "+allTasks.get(i).getUser());
+            if ((allTasks.get(i).getUser()).equals(user)){
+                content.add(allTasks.get(i).getBody()+" - "+ allTasks.get(i).getDate() + " - "+allTasks.get(i).getUser());
+            }
         }
         String[] listItems = new String[content.size()];
         for (int i=0; i<content.size(); i++){

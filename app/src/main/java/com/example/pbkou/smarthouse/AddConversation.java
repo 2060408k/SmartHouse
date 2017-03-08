@@ -24,13 +24,18 @@ import com.example.pbkou.smarthouse.Database.DBHandler;
 import com.example.pbkou.smarthouse.HouseSettings.Add_BeaconActivity;
 import com.example.pbkou.smarthouse.HouseSettings.Beacon_SelectActivity;
 import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sendbird.android.shadow.com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -38,7 +43,7 @@ import java.util.Map;
  */
 
 public class AddConversation extends AppCompatActivity {
-
+    private HashMap usersHash;
     private SharedPreferences preferences;
     private EditText area;
     private DatabaseReference mDatabase;
@@ -49,9 +54,11 @@ public class AddConversation extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_converation);
-
-        //Get the preference manager
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String houseNum = preferences.getString("house_num","");
+        System.out.println(houseNum);
+        loadData(houseNum);
+
 
         //set the toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -62,28 +69,30 @@ public class AddConversation extends AppCompatActivity {
         final EditText conv_name_txt = (EditText) findViewById(R.id.add_conv_name);
 
         //Populate List of users
-        ListView mListView = (ListView) findViewById(R.id.users_scroll_view);
-        final ArrayList<String> users = new ArrayList<String>();
-        users.add("User1");
-        users.add("User2");
-        users.add("User3");
-        String[] listItems = new String[users.size()];
-        for (int i=0; i<users.size(); i++){
-            String user = users.get(i);
-            listItems[i] = user;
-        }
 
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,listItems);
-        mListView.setAdapter(adapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String entry = parent.getAdapter().getItem(position).toString();
-                selectedUsers.add(entry);
-                updateSelectedUsers();
-            }
-        });
+//        ListView mListView = (ListView) findViewById(R.id.users_scroll_view);
+//        final ArrayList<String> users = new ArrayList<String>();
+//        users.add("User1");
+//        users.add("User2");
+//        users.add("User3");
+//        String[] listItems = new String[users.size()];
+//        for (int i=0; i<users.size(); i++){
+//            String user = users.get(i);
+//            listItems[i] = user;
+//        }
+//
+//
+//        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,listItems);
+//        mListView.setAdapter(adapter);
+//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                String entry = parent.getAdapter().getItem(position).toString();
+//                selectedUsers.add(entry);
+//                updateSelectedUsers();
+//            }
+//        });
 
         //add btn
         Button add_btn= (Button) findViewById(R.id.add_conv_add);
@@ -188,6 +197,53 @@ public class AddConversation extends AppCompatActivity {
         super.onDestroy();
 
     }
+    private void loadData(String house_num){
+        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("house_numbers").child(house_num).child("users");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                usersHash = (HashMap) dataSnapshot.getValue();
+                Iterator it = usersHash.entrySet().iterator();
+                ListView mListView = (ListView) findViewById(R.id.users_scroll_view);
+                final ArrayList<String> users = new ArrayList<String>();
+                while (it.hasNext()) {
+                    Map.Entry pair = (Map.Entry)it.next();
+                    System.out.println(pair.getKey() + " = " + pair.getValue());
+                    Iterator it2 = ((HashMap) pair.getValue()).entrySet().iterator();
+                    while (it2.hasNext()){
+                        Map.Entry pair2 = (Map.Entry)it2.next();
+                        if (pair2.getKey().toString().equals("name")){
+                            users.add(pair2.getValue().toString());
+                        }
+                        it2.remove();
+                    }
+                    it.remove(); // avoids a ConcurrentModificationException
+                }
+
+                String[] listItems = new String[users.size()];
+                for (int i=0; i<users.size(); i++){
+                    String user = users.get(i);
+                    listItems[i] = user;
+                }
+
+                ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1,listItems);
+                mListView.setAdapter(adapter);
+                mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String entry = parent.getAdapter().getItem(position).toString();
+                        selectedUsers.add(entry);
+                        updateSelectedUsers();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
 
 
     //Getters-Setters
