@@ -5,6 +5,8 @@ import android.*;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -75,6 +77,9 @@ public class MainActivity extends AppCompatActivity  {
     private final static int REQUEST_ENABLE_BT=1;
     private LocationManager lm;
     private Location location;
+    private NotificationService notificationService;
+    private TextView txtView;
+    //private NotificationReceiver nReceiver;
 
 
     private final LocationListener locationListener = new LocationListener() {
@@ -213,6 +218,12 @@ public class MainActivity extends AppCompatActivity  {
             return;
 
         }
+//        txtView = (TextView) findViewById(R.id.textView);
+//        nReceiver = new NotificationReceiver();
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
+//        registerReceiver(nReceiver,filter);
+
     }
 
 
@@ -221,6 +232,7 @@ public class MainActivity extends AppCompatActivity  {
         getMenuInflater().inflate(R.menu.action_bar, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -343,6 +355,14 @@ public class MainActivity extends AppCompatActivity  {
         });
     }
 
+//    class NotificationReceiver extends BroadcastReceiver {
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String temp = intent.getStringExtra("notification_event") + "n";
+//            System.out.println(temp + " MEOW");
+//        }
+//    }
 
 
 }

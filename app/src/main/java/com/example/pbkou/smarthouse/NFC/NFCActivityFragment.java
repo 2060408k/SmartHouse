@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import com.example.pbkou.smarthouse.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,7 +46,7 @@ public class NFCActivityFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private TextToSpeech t1;
     private HashMap<String,String> playlists = new HashMap<String,String>();
     private MediaPlayerService mediaPlayerService = new MediaPlayerService();
     private OnFragmentInteractionListener mListener;
@@ -98,6 +100,24 @@ public class NFCActivityFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_nfcactivity, container, false);
 
         Button musi_player_btn = (Button) v.findViewById(R.id.music_player_activity_btn);
+
+
+        //Notification reader
+        Button not_button = (Button) v.findViewById(R.id.read_notifications_activity_btn);
+        t1=new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    t1.setLanguage(Locale.CANADA_FRENCH);
+                }
+            }
+        });
+        not_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                t1.speak("meow ", TextToSpeech.QUEUE_FLUSH, null);
+            }
+        });
 
 
 

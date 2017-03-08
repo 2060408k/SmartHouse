@@ -4,16 +4,21 @@ package com.example.pbkou.smarthouse.Database;
  * Created by pbkou on 27/02/2017.
  */
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.example.pbkou.smarthouse.MainActivity;
+import com.example.pbkou.smarthouse.R;
+import com.example.pbkou.smarthouse.Tasks;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -40,6 +45,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // [END_EXCLUDE]
 
         // TODO(developer): Handle FCM messages here.
+        Intent notificationIntent = new Intent(getBaseContext(), Tasks.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(getBaseContext(),
+                1, notificationIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+
+        NotificationManager nm = (NotificationManager) getBaseContext()
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Resources res = getBaseContext().getResources();
+        Notification.Builder builder = new Notification.Builder(getBaseContext());
+
+        builder.setContentIntent(contentIntent)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setWhen(System.currentTimeMillis())
+                .setAutoCancel(true)
+                .setContentTitle(remoteMessage.getNotification().getTitle())
+                .setContentText(remoteMessage.getNotification().getBody());
+        Notification n = builder.build();
+
+        nm.notify(1, n);
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
