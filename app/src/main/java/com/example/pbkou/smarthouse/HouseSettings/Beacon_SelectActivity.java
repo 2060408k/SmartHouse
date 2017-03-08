@@ -12,6 +12,7 @@ import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,7 @@ public class Beacon_SelectActivity extends AppCompatActivity {
     private ScanResultArrayAdapter scanAdapter = null;
     private Button toggleScan = null;
     private SharedPreferences preferences;
+    private static int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE=2;
 
     // request ID for enabling Bluetooth
     private static final int REQUEST_ENABLE_BT = 1000;
@@ -62,7 +64,7 @@ public class Beacon_SelectActivity extends AppCompatActivity {
 
         preferences=PreferenceManager.getDefaultSharedPreferences(this);
 
-        this.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},1);
+
         //set the toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -80,7 +82,7 @@ public class Beacon_SelectActivity extends AppCompatActivity {
                 // retrieve the adapter and get the selected item from it
                 ScanResultArrayAdapter adapter = (ScanResultArrayAdapter) adapterView.getAdapter();
                 BeaconInfo newSelectedBeacon = adapter.getItem(position);
-                Log.i(TAG, "Tapped beacon " + newSelectedBeacon.name);
+
                 SharedPreferences.Editor editor=preferences.edit();
                 editor.putString("selected_beacon",newSelectedBeacon.name+"/"+newSelectedBeacon.address);
                 editor.commit();
