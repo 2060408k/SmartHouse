@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -26,15 +27,26 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.pbkou.smarthouse.Database.DBHandler;
 import com.example.pbkou.smarthouse.Database.LoginActivity;
 import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sendbird.android.shadow.com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -43,7 +55,10 @@ import java.util.Map;
  */
 
 public class Tasks extends AppCompatActivity {
-
+    private SharedPreferences preferences;
+    private DatabaseReference mDatabase;
+    private HashMap firebase_data;
+    private HashMap tasksHash;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,22 +82,9 @@ public class Tasks extends AppCompatActivity {
         ListView mListView = (ListView)findViewById(R.id.tasks_scroll_view);
         SharedPreferences preferences;
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String user = preferences.getString("user_name","");
-        final ArrayList<Task> allTasks = dbhandler.getAllTasks();
-        final ArrayList<String> content = new ArrayList<String>();
-        for (int i=0; i<allTasks.size(); i++){
-            if ((allTasks.get(i).getUser()).equals(user)){
-                content.add(allTasks.get(i).getBody()+" - "+ allTasks.get(i).getDate() + " - "+allTasks.get(i).getUser());
-            }
-        }
-        String[] listItems = new String[content.size()];
-        for (int i=0; i<content.size(); i++){
-            String task = content.get(i);
-            listItems[i] = task;
-        }
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,listItems);
-        mListView.setAdapter(adapter);
-        //setContentView(mListView);
+        String user = preferences.getString("user","");
+        String houseNum = preferences.getString("house_num","");
+        loadData(houseNum,user);
 
     }
     @Override
@@ -125,6 +127,56 @@ public class Tasks extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadData(String house_num, String user) {
+        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("house_numbers").child(house_num).child("users").child(user).child("tasks_from");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                tasksHash = (HashMap) dataSnapshot.getValue();
+                Iterator it = tasksHash.entrySet().iterator();
+                ListView mListView = (ListView) findViewById(R.id.tasks_scroll_view);
+                final ArrayList<String> content = new ArrayList<String>();
+
+                while (it.hasNext()) {
+                    Map.Entry pair = (Map.Entry) it.next();
+                    System.out.println("Key: "+pair.getKey());
+                    System.out.println("Value: "+pair.getValue());
+                    Iterator it2 = ((HashMap) pair.getValue()).entrySet().iterator();
+                    String body="";
+                    String user_from = "";
+                    while (it2.hasNext()) {
+                        Map.Entry pair2 = (Map.Entry) it2.next();
+                        if (pair2.getKey().toString().equals("body")) {
+                            body = pair2.getValue().toString();
+                        }
+                        if (pair2.getKey().toString().equals("user_from")) {
+                            user_from = pair2.getValue().toString();
+                        }
+                        if (pair2.getKey().toString().equals("date")) {
+                            String date = pair2.getValue().toString();
+                        }
+                    }
+                    content.add("Task: " + body + "\n" + "From: " + user_from);
+                    it.remove(); // avoids a ConcurrentModificationException
+                }
+
+                String[] listItems = new String[content.size()];
+                for (int i=0; i<content.size(); i++){
+                    String task = content.get(i);
+                    listItems[i] = task;
+                }
+                ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1,listItems);
+                mListView.setAdapter(adapter);
+                //setContentView(mListView);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 }
 
