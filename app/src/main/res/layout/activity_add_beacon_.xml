@@ -15,30 +15,29 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        android:elevation="4dp" />
 
     <EditText
+        android:id="@+id/add_beacon_beacon_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="Area Name"
         android:ems="10"
-        android:id="@+id/add_beacon_beacon_name" />
+        android:inputType="textPersonName"
+        android:text="Area Name" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/add_beacon_selected_beacon_name" />
 
-    <Button
+    <Button style="@style/Widget.AppCompat.Button.Colored"
+
         android:text="Select Beacon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/add_beacon_select_beacon" />
 
-    <Button
+    <Button style="@style/Widget.AppCompat.Button.Colored"
         android:text="Add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

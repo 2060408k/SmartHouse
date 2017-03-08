@@ -21,20 +21,27 @@
 
     <Button
         android:text="Add New Beacon"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/add_beacon"
         android:visibility="gone" />
 
-    <Button
+    <Button style="@style/Widget.AppCompat.Button.Colored"
         android:text="See All Beacons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/beacon_areas" />
 
-    <Button
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:srcCompat="@mipmap/ic_beacon" />
+
+    <Button style="@style/Widget.AppCompat.Button.Colored"
         android:text="Add Beacon Activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -42,8 +42,9 @@
             android:layout_height="fill_parent"
             android:layout_weight="2" />
 
-        <Button
-            android:id="@+id/send"
+        <Button style="@style/Widget.AppCompat.Button.Colored"
+
+        android:id="@+id/send"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"

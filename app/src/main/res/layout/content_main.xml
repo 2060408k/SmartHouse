@@ -19,12 +19,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <Button
+    <Button style="@style/Widget.AppCompat.Button.Colored"
         android:text="@string/change_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/change_activity" />
-    <Button
+    <Button style="@style/Widget.AppCompat.Button.Colored"
         android:text="@string/btn_tasks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
