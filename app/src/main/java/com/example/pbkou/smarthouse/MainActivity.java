@@ -58,7 +58,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity  {
-
+    private DatabaseReference mDatabase;
     private NfcAdapter mNfcAdapter;
     private TextView mTextView;
     public static final String MIME_TEXT_PLAIN = "text/plain";
@@ -258,23 +258,25 @@ public class MainActivity extends AppCompatActivity  {
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
-
-
     private void subscribeToPushService() {
         FirebaseMessaging.getInstance().subscribeToTopic("news");
-
-
         Log.d("AndroidBash", "Subscribed");
-        Toast.makeText(MainActivity.this, "Subscribed", Toast.LENGTH_SHORT).show();
-
+        //Toast.makeText(MainActivity.this, "Subscribed", Toast.LENGTH_SHORT).show();
         String token = FirebaseInstanceId.getInstance().getToken();
+        //Get the preference manager
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String houseNum = preferences.getString("house_num", "");
+        //get database reference
+        mDatabase = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("house_numbers")
+                .child(houseNum.toString());
+        final String user = preferences.getString("user", "");
+        mDatabase.child("users").child(user).child("token").setValue(token);
 
         // Log and toast
         Log.d("AndroidBash", token);
-        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
     }
 
     private void loadData(){

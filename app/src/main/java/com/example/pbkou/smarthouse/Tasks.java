@@ -1,5 +1,6 @@
 package com.example.pbkou.smarthouse;
 
+import android.app.DownloadManager;
 import android.app.LocalActivityManager;
 import android.app.TabActivity;
 import android.content.Context;
@@ -7,8 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.SyncStateContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
@@ -42,12 +45,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.sendbird.android.shadow.com.google.gson.Gson;
+
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 /**
@@ -129,6 +140,7 @@ public class Tasks extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     private void loadData(String house_num, String user) {
         final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("house_numbers").child(house_num).child("users").child(user).child("tasks_from");
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -141,8 +153,6 @@ public class Tasks extends AppCompatActivity {
 
                 while (it.hasNext()) {
                     Map.Entry pair = (Map.Entry) it.next();
-                    System.out.println("Key: "+pair.getKey());
-                    System.out.println("Value: "+pair.getValue());
                     Iterator it2 = ((HashMap) pair.getValue()).entrySet().iterator();
                     String body="";
                     String user_from = "";
