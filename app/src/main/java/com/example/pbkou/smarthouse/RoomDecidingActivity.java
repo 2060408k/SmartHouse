@@ -101,6 +101,7 @@ public class RoomDecidingActivity extends AppCompatActivity {
 
                                 //update database
                                 mDatabase.child("users").child(user).child("name").setValue(user_name);
+                                mDatabase.child("users").child(user).child("location").setValue("Absent");
                                 DBHandler dbhandler = new DBHandler(RoomDecidingActivity.this);
                                 dbhandler.resetBeaconTable();
 
@@ -111,7 +112,7 @@ public class RoomDecidingActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
 
-                            //mDatabase.child(android_id).child("smart_reminding").setValue(true);
+
                         } catch (NumberFormatException ignored) {
                             Toast.makeText(getBaseContext(),"You have not provided a number",Toast.LENGTH_LONG).show();
                             dialog.cancel();
@@ -155,7 +156,7 @@ public class RoomDecidingActivity extends AppCompatActivity {
                             mDatabase= FirebaseDatabase.getInstance().getReference();
                             mDatabase.child("house_numbers").child(last_house_number.toString()).child("admin_id").setValue(user);
                             mDatabase.child("house_numbers").child(last_house_number.toString()).child("users").child(user).child("name").setValue(user_name);
-
+                            mDatabase.child("house_numbers").child(last_house_number.toString()).child("users").child(user).child("location").setValue("Absent");
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putString("house_num",last_house_number.toString());
                             editor.putString("role","admin");//must change later
@@ -163,7 +164,6 @@ public class RoomDecidingActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(getBaseContext(),MainActivity.class);
                             startActivity(intent);
-                            //mDatabase.child(android_id).child("smart_reminding").setValue(true);
                         } catch (NumberFormatException ignored) {
                             Toast.makeText(getBaseContext(),"You have provided a number",Toast.LENGTH_LONG).show();
                             dialog.cancel();

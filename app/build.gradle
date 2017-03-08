@@ -56,5 +56,6 @@ dependencies {
 }
 dependencies {
     compile 'com.android.support:support-v4:25.+'
+    compile 'com.google.android.gms:play-services-maps:10.2.0'
 }
 apply plugin: 'com.google.gms.google-services'
