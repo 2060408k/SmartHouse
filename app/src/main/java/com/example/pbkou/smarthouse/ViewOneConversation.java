@@ -1,5 +1,6 @@
 package com.example.pbkou.smarthouse;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -18,6 +20,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.pbkou.smarthouse.Database.DBHandler;
+import com.example.pbkou.smarthouse.Database.LoginActivity;
+import com.example.pbkou.smarthouse.HouseSettings.House_Settings;
 import com.sendbird.android.shadow.com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
@@ -119,5 +123,39 @@ public class ViewOneConversation extends AppCompatActivity {
         //chatText.setText("");
         //side = !side;
         return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id) {
+            case R.id.house_settings:
+                startActivity(new Intent(this,House_Settings.class));
+                break;
+            case R.id.activity_notifications:
+                startActivity(new Intent(this,notifications.class));
+                break;
+            case R.id.add_conv_add:
+                startActivity(new Intent(this,Conversations.class));
+                break;
+            case R.id.activitys:
+                startActivity(new Intent(this,MainActivity.class));
+                break;
+            case R.id.activity_show_tasks:
+                startActivity(new Intent(this,Tasks.class));
+                break;
+            case R.id.activity_room_deciding:
+                startActivity(new Intent(this,RoomDecidingActivity.class));
+                break;
+            case R.id.change_activity:
+                startActivity(new Intent(this,LoginActivity.class));
+                break;
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

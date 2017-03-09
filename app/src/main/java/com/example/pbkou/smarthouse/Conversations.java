@@ -73,93 +73,96 @@ public class Conversations extends AppCompatActivity {
         String user = preferences.getString("user_name","");
         int index=1;
         boolean flag=false;
-        for (Map<Group, ArrayList> conv : all_conversations) {
-            final Map<Group, ArrayList> temp_group = conv;
-            for (final Map.Entry<Group, ArrayList> entry : temp_group.entrySet()) {
-                //Check if this conversation contains the signed in user
-                for (int i = 0; i < entry.getValue().size(); i++) {
-                    System.out.println("Hashmap value: "+ entry.getValue().get(i).toString());
-                    if (entry.getValue().get(i).toString().equals(user.toString())) {
-                        System.out.println("condition: "+entry.getValue().get(i).toString().equals(user.toString()));
-                        flag = true;
-                    }
-                }
-
-                //TODO: uncomment above section and set flag to true in order to show conversations of signed in user
-                if (flag == true) {
-                    TextView tv = new TextView(this);
-                    String content = entry.getKey().getName() + "\n";
+        if (all_conversations!=null){
+            for (Map<Group, ArrayList> conv : all_conversations) {
+                final Map<Group, ArrayList> temp_group = conv;
+                for (final Map.Entry<Group, ArrayList> entry : temp_group.entrySet()) {
+                    //Check if this conversation contains the signed in user
                     for (int i = 0; i < entry.getValue().size(); i++) {
-                        content += entry.getValue().get(i);
-                        if (i != entry.getValue().size() - 1) {
-                            content += ", ";
+                        System.out.println("Hashmap value: "+ entry.getValue().get(i).toString());
+                        if (entry.getValue().get(i).toString().equals(user.toString())) {
+                            System.out.println("condition: "+entry.getValue().get(i).toString().equals(user.toString()));
+                            flag = true;
                         }
-                        content += "\n";
                     }
-                    index++;
-                    tv.setText(content);
-                    tv.setLayoutParams(new ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
-                    tv.setTextSize(32);
-                    //TODO: DELETE IS NOT WORKING AT THE MOMENT
-                    tv.setOnLongClickListener(new View.OnLongClickListener() {
 
-                        @Override
-                        public boolean onLongClick(View v) {
+                    //TODO: uncomment above section and set flag to true in order to show conversations of signed in user
+                    if (flag == true) {
+                        TextView tv = new TextView(this);
+                        String content = entry.getKey().getName() + "\n";
+                        for (int i = 0; i < entry.getValue().size(); i++) {
+                            content += entry.getValue().get(i);
+                            if (i != entry.getValue().size() - 1) {
+                                content += ", ";
+                            }
+                            content += "\n";
+                        }
+                        index++;
+                        tv.setText(content);
+                        tv.setLayoutParams(new ViewGroup.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT));
+                        tv.setTextSize(32);
+                        //TODO: DELETE IS NOT WORKING AT THE MOMENT
+                        tv.setOnLongClickListener(new View.OnLongClickListener() {
 
-                            android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(Conversations.this);
+                            @Override
+                            public boolean onLongClick(View v) {
 
-                            final TextView et = new TextView(Conversations.this);
-                            et.setText(R.string.delete_conversation);
-                            et.setTextSize(28);
+                                android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(Conversations.this);
 
-                            // set prompts.xml to alertdialog builder
-                            alertDialogBuilder.setView(et);
+                                final TextView et = new TextView(Conversations.this);
+                                et.setText(R.string.delete_conversation);
+                                et.setTextSize(28);
 
-                            // set dialog message
-                            alertDialogBuilder.setCancelable(true).setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
+                                // set prompts.xml to alertdialog builder
+                                alertDialogBuilder.setView(et);
 
-                                    DBHandler dbhandler = new DBHandler(Conversations.this);
-                                    for (Map.Entry<Group, ArrayList> entry : temp_group.entrySet()) {
-                                        System.out.println(entry);
-                                        System.out.println(dbhandler.deleteGroup(entry.getKey()));
+                                // set dialog message
+                                alertDialogBuilder.setCancelable(true).setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                        DBHandler dbhandler = new DBHandler(Conversations.this);
+                                        for (Map.Entry<Group, ArrayList> entry : temp_group.entrySet()) {
+                                            System.out.println(entry);
+                                            System.out.println(dbhandler.deleteGroup(entry.getKey()));
+                                        }
+
+                                        Intent intent = getIntent();
+                                        finish();
+                                        startActivity(intent);
+                                        //dialog.dismiss();
+
                                     }
+                                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
 
-                                    Intent intent = getIntent();
-                                    finish();
-                                    startActivity(intent);
-                                    //dialog.dismiss();
+                                // create alert dialog
+                                android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                                // show it
+                                alertDialog.show();
+                                return false;
+                            }
+                        });
+                        tv.setOnClickListener(new View.OnClickListener() {
 
-                                }
-                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                            // create alert dialog
-                            android.app.AlertDialog alertDialog = alertDialogBuilder.create();
-                            // show it
-                            alertDialog.show();
-                            return false;
-                        }
-                    });
-                    tv.setOnClickListener(new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View v) {
-                            Intent view_conv = new Intent(v.getContext(), ViewOneConversation.class);
-                            view_conv.putExtra("group", new Gson().toJson(entry.getKey()));
-                            startActivity(view_conv);
-                        }
-                    });
-                    main_view.addView(tv);
+                            @Override
+                            public void onClick(View v) {
+                                Intent view_conv = new Intent(v.getContext(), ViewOneConversation.class);
+                                view_conv.putExtra("group", new Gson().toJson(entry.getKey()));
+                                startActivity(view_conv);
+                            }
+                        });
+                        main_view.addView(tv);
+                    }
                 }
             }
         }
+
     }
 
 
@@ -168,6 +171,7 @@ public class Conversations extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.action_bar, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -181,7 +185,7 @@ public class Conversations extends AppCompatActivity {
                 startActivity(new Intent(this,notifications.class));
                 break;
             case R.id.add_conv_add:
-                startActivity(new Intent(this,AddConversation.class));
+                startActivity(new Intent(this,Conversations.class));
                 break;
             case R.id.activitys:
                 startActivity(new Intent(this,MainActivity.class));

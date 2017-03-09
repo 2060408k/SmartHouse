@@ -149,11 +149,12 @@ public class SendNotification extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id) {
+        switch(id) {
             case R.id.house_settings:
                 startActivity(new Intent(this,House_Settings.class));
                 break;
@@ -161,7 +162,7 @@ public class SendNotification extends AppCompatActivity {
                 startActivity(new Intent(this,notifications.class));
                 break;
             case R.id.add_conv_add:
-                startActivity(new Intent(this,AddConversation.class));
+                startActivity(new Intent(this,Conversations.class));
                 break;
             case R.id.activitys:
                 startActivity(new Intent(this,MainActivity.class));

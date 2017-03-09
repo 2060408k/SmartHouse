@@ -38,7 +38,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
     public static final String TAG = LoginActivity.class.getSimpleName();
-    private TextView mStatusTextView;
     private ProgressDialog mProgressDialog;
     private SharedPreferences preferences;
 
@@ -69,7 +68,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         };
 
         // Views
-        mStatusTextView = (TextView) findViewById(R.id.status);
+
 
         // Button listeners
         findViewById(R.id.google_sign_in_button).setOnClickListener(this);
@@ -147,7 +146,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             updateUI(true);
             SharedPreferences.Editor editor=preferences.edit();
 
@@ -266,7 +264,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             findViewById(R.id.google_sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
         } else {
-            mStatusTextView.setText(R.string.google_signed_out);
 
             findViewById(R.id.google_sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);

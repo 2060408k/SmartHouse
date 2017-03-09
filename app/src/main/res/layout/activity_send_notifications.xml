@@ -28,17 +28,22 @@
         android:textStyle="bold"
         android:text="@string/send_notification"
         android:textAppearance="@android:style/TextAppearance.Large" />
-
+    <TextView
+        android:id="@+id/not_body_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:textStyle="bold"
+        android:text="@string/let_members_know_that" />
     <EditText
         android:id="@+id/not_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_marginBottom="7dp"
+        android:layout_marginTop="5dp"
         android:contentDescription="Notification:"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Notification:" />
+        android:inputType="textPersonName" />
 
     <Button style="@style/Widget.AppCompat.Button.Colored"
         android:text="Send Notification"

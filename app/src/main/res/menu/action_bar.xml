@@ -3,7 +3,7 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/sh_banner"
+    android:src="@drawable/smarthouse_whitebg"
     android:color="#FFF">
         <!-- "Mark Favorite", should appear as action button if possible -->
 

@@ -38,6 +38,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity  {
         r_layout.setPadding(16, actionBarHeight, 16, 16);
 
 
-        Button send_btn = (Button) findViewById(R.id.add_not_btn);
+        ImageButton send_btn = (ImageButton) findViewById(R.id.add_not_btn);
         send_btn.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -240,7 +241,7 @@ public class MainActivity extends AppCompatActivity  {
                 startActivity(new Intent(this,notifications.class));
                 break;
             case R.id.add_conv_add:
-                startActivity(new Intent(this,AddConversation.class));
+                startActivity(new Intent(this,Conversations.class));
                 break;
             case R.id.activitys:
                 startActivity(new Intent(this,MainActivity.class));
