@@ -38,4 +38,8 @@
     <string name="music_player_frag">MUSIC_PLAYER_FRAG</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sendNot">Send Notification</string>
+    <string name="send_notification">SEND NOTIFICATION</string>
+    <string name="let_members_know_that">Let members know that...</string>
+    <string name="please_sign_in">Please sign in</string>
 </resources>

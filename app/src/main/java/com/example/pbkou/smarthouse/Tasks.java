@@ -104,6 +104,7 @@ public class Tasks extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -116,7 +117,7 @@ public class Tasks extends AppCompatActivity {
                 startActivity(new Intent(this,notifications.class));
                 break;
             case R.id.add_conv_add:
-                startActivity(new Intent(this,AddConversation.class));
+                startActivity(new Intent(this,Conversations.class));
                 break;
             case R.id.activitys:
                 startActivity(new Intent(this,MainActivity.class));
@@ -144,39 +145,42 @@ public class Tasks extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 tasksHash = (HashMap) dataSnapshot.getValue();
-                Iterator it = tasksHash.entrySet().iterator();
-                ListView mListView = (ListView) findViewById(R.id.tasks_scroll_view);
-                final ArrayList<String> content = new ArrayList<String>();
+                if (tasksHash!=null && tasksHash.size()>0){
+                    Iterator it = tasksHash.entrySet().iterator();
+                    ListView mListView = (ListView) findViewById(R.id.tasks_scroll_view);
+                    final ArrayList<String> content = new ArrayList<String>();
 
-                while (it.hasNext()) {
-                    Map.Entry pair = (Map.Entry) it.next();
-                    Iterator it2 = ((HashMap) pair.getValue()).entrySet().iterator();
-                    String body="";
-                    String user_from = "";
-                    while (it2.hasNext()) {
-                        Map.Entry pair2 = (Map.Entry) it2.next();
-                        if (pair2.getKey().toString().equals("body")) {
-                            body = pair2.getValue().toString();
+                    while (it.hasNext()) {
+                        Map.Entry pair = (Map.Entry) it.next();
+                        Iterator it2 = ((HashMap) pair.getValue()).entrySet().iterator();
+                        String body="";
+                        String user_from = "";
+                        while (it2.hasNext()) {
+                            Map.Entry pair2 = (Map.Entry) it2.next();
+                            if (pair2.getKey().toString().equals("body")) {
+                                body = pair2.getValue().toString();
+                            }
+                            if (pair2.getKey().toString().equals("user_from")) {
+                                user_from = pair2.getValue().toString();
+                            }
+                            if (pair2.getKey().toString().equals("date")) {
+                                String date = pair2.getValue().toString();
+                            }
                         }
-                        if (pair2.getKey().toString().equals("user_from")) {
-                            user_from = pair2.getValue().toString();
-                        }
-                        if (pair2.getKey().toString().equals("date")) {
-                            String date = pair2.getValue().toString();
-                        }
+                        content.add("Task: " + body + "\n" + "From: " + user_from);
+                        it.remove(); // avoids a ConcurrentModificationException
                     }
-                    content.add("Task: " + body + "\n" + "From: " + user_from);
-                    it.remove(); // avoids a ConcurrentModificationException
+                    if(content.size()>0){
+                        String[] listItems = new String[content.size()];
+                        for (int i=0; i<content.size(); i++){
+                            String task = content.get(i);
+                            listItems[i] = task;
+                        }
+                        ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1,listItems);
+                        mListView.setAdapter(adapter);
+                        //setContentView(mListView);
+                    }
                 }
-
-                String[] listItems = new String[content.size()];
-                for (int i=0; i<content.size(); i++){
-                    String task = content.get(i);
-                    listItems[i] = task;
-                }
-                ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1,listItems);
-                mListView.setAdapter(adapter);
-                //setContentView(mListView);
 
             }
 
