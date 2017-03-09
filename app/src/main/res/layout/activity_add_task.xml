@@ -40,12 +40,11 @@
         android:id="@+id/add_task_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_marginBottom="7dp"
+        android:layout_marginTop="5dp"
         android:contentDescription="Task Description"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/task_description" />
+        android:inputType="textPersonName" />
 
 
     <TextView

@@ -178,9 +178,6 @@ public class Conversations extends AppCompatActivity {
             case R.id.house_settings:
                 startActivity(new Intent(this,House_Settings.class));
                 break;
-            case R.id.view_conversations:
-                startActivity(new Intent(this,Conversations.class));
-                break;
             case R.id.activity_notifications:
                 startActivity(new Intent(this,notifications.class));
                 break;
