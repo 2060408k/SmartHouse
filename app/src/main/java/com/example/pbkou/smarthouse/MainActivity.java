@@ -193,7 +193,15 @@ public class MainActivity extends AppCompatActivity  {
         r_layout.setPadding(16, actionBarHeight, 16, 16);
 
 
+        Button send_btn = (Button) findViewById(R.id.add_not_btn);
+        send_btn.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                Intent send_not_intent = new Intent(v.getContext(), SendNotification.class);
+                startActivity(send_not_intent);
+            }
+        });
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 

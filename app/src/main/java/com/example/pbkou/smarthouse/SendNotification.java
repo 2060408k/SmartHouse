@@ -155,28 +155,25 @@ public class SendNotification extends AppCompatActivity {
 
         switch (id) {
             case R.id.house_settings:
-                startActivity(new Intent(this, House_Settings.class));
-                break;
-            case R.id.view_conversations:
-                startActivity(new Intent(this, Conversations.class));
+                startActivity(new Intent(this,House_Settings.class));
                 break;
             case R.id.activity_notifications:
-                startActivity(new Intent(this, notifications.class));
+                startActivity(new Intent(this,notifications.class));
                 break;
             case R.id.add_conv_add:
-                startActivity(new Intent(this, AddConversation.class));
+                startActivity(new Intent(this,AddConversation.class));
                 break;
             case R.id.activitys:
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this,MainActivity.class));
                 break;
             case R.id.activity_show_tasks:
-                startActivity(new Intent(this, Tasks.class));
+                startActivity(new Intent(this,Tasks.class));
                 break;
             case R.id.activity_room_deciding:
-                startActivity(new Intent(this, RoomDecidingActivity.class));
+                startActivity(new Intent(this,RoomDecidingActivity.class));
                 break;
             case R.id.change_activity:
-                startActivity(new Intent(this, LoginActivity.class));
+                startActivity(new Intent(this,LoginActivity.class));
                 break;
             default:
                 break;
