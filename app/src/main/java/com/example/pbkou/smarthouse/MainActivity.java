@@ -86,8 +86,11 @@ public class MainActivity extends AppCompatActivity  {
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             SharedPreferences.Editor editor =  preferences.edit();
-            editor.putString("latitude_dbl",location.getLatitude()+"");
-            editor.putString("longitude_dbl",location.getLongitude()+"");
+            String lat =location.getLatitude()+"";
+            String lon = location.getLongitude()+"";
+            System.out.println(lat + lon);
+            editor.putString("latitude_dbl",lat);
+            editor.putString("longitude_dbl",lon);
             editor.commit();
         }
 
@@ -133,13 +136,16 @@ public class MainActivity extends AppCompatActivity  {
         //location
         lm = (LocationManager)getSystemService(getBaseContext().LOCATION_SERVICE);
         location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        SharedPreferences.Editor editor =  preferences.edit();
-        String lat =location.getLatitude()+"";
-        String lon = location.getLongitude()+"";
-        System.out.println(lat + lon);
-        editor.putString("latitude_dbl",lat);
-        editor.putString("longitude_dbl",lon);
-        editor.commit();
+        if (location!=null){
+            SharedPreferences.Editor editor =  preferences.edit();
+            String lat =location.getLatitude()+"";
+            String lon = location.getLongitude()+"";
+            System.out.println(lat + lon);
+            editor.putString("latitude_dbl",lat);
+            editor.putString("longitude_dbl",lon);
+            editor.commit();
+        }
+
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
 
         //ask for bluetooth
