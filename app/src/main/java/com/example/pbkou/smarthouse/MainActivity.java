@@ -31,6 +31,7 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -159,8 +160,9 @@ public class MainActivity extends AppCompatActivity  {
         } else {
             loadData();
             TextView hello_tv = (TextView) findViewById(R.id.hello_tv);
-            hello_tv.setText("Hello "+user_name);
-            hello_tv.setTextSize(32);
+            hello_tv.setText("Hello "+user_name.split(" ")[0]);
+            hello_tv.setTextSize(38);
+            hello_tv.setGravity(Gravity.CENTER_HORIZONTAL);
 
             clservice=new CurrentLocationService();
             clservice.startUpdatingCurrentLocation(this);
@@ -190,23 +192,8 @@ public class MainActivity extends AppCompatActivity  {
         LinearLayout r_layout = (LinearLayout) findViewById(R.id.content_main);
         r_layout.setPadding(16, actionBarHeight, 16, 16);
 
-        Button change_activity_btn = (Button) findViewById(R.id.change_activity);
-        final Intent change_activity_intent = new Intent(this, LoginActivity.class);
-        change_activity_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(change_activity_intent);
-            }
-        });
-        Button send_btn = (Button) findViewById(R.id.btn_view_nots);
-        send_btn.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                Intent send_not_intent = new Intent(v.getContext(), SendNotification.class);
-                startActivity(send_not_intent);
-            }
-        });
+
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
@@ -240,9 +227,6 @@ public class MainActivity extends AppCompatActivity  {
         switch(id) {
             case R.id.house_settings:
                 startActivity(new Intent(this,House_Settings.class));
-                break;
-            case R.id.view_conversations:
-                startActivity(new Intent(this,Conversations.class));
                 break;
             case R.id.activity_notifications:
                 startActivity(new Intent(this,notifications.class));
@@ -310,6 +294,7 @@ public class MainActivity extends AppCompatActivity  {
 
                 LinearLayout ll = (LinearLayout) findViewById(R.id.home_ll);
 
+
                 for (Map.Entry<String, String> entry : users_locations.entrySet())
                 {
                     TextView tv = new TextView(getBaseContext());
@@ -317,7 +302,7 @@ public class MainActivity extends AppCompatActivity  {
                     if(entry == null || entry.getValue()==null || entry.getKey()==null ) continue;
                     if (entry!=null && entry.getValue()!=null && !entry.getValue().contains("_")) text = entry.getKey()+"  "+ entry.getValue();
                     tv.setText(text);
-                    tv.setTextSize(16);
+                    tv.setTextSize(24);
                     tv.setLayoutParams(new ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));

@@ -72,7 +72,7 @@ public class RoomDecidingActivity extends AppCompatActivity {
                 android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(RoomDecidingActivity.this);
 
                 final EditText et = new EditText(RoomDecidingActivity.this);
-                et.setText(R.string.room_number);
+                et.setContentDescription("Room Number");
                 et.setTextSize(28);
 
                 // set prompts.xml to alertdialog builder
@@ -297,9 +297,6 @@ public class RoomDecidingActivity extends AppCompatActivity {
         switch(id) {
             case R.id.house_settings:
                 startActivity(new Intent(this,House_Settings.class));
-                break;
-            case R.id.view_conversations:
-                startActivity(new Intent(this,Conversations.class));
                 break;
             case R.id.activity_notifications:
                 startActivity(new Intent(this,notifications.class));

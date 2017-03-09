@@ -13,16 +13,7 @@
         android:icon="@drawable/ic_home"
         android:title="@string/action_favorite"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/view_conversations"
-        android:icon="@drawable/ic_group"
-        android:title="@string/action_favorite"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/activity_room_deciding"
-        android:title="@string/action_favorite"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_places" />
+
     <item
         android:id="@+id/add_conv_add"
         android:icon="@drawable/ic_chat"
@@ -33,11 +24,6 @@
         android:icon="@drawable/ic_reminder"
         android:title="@string/action_favorite"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/activity_notifications"
-        android:icon="@drawable/ic_nots"
-        android:title="@string/action_favorite"
-        app:showAsAction="always"/>
     <item xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/change_activity"
         android:title="@string/login"
