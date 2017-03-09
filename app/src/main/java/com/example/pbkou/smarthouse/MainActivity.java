@@ -198,14 +198,13 @@ public class MainActivity extends AppCompatActivity  {
                 startActivity(change_activity_intent);
             }
         });
-        System.out.println("About to enter tasks");
-        Button tasks_btn = (Button) findViewById(R.id.btn_tasks);
-        tasks_btn.setOnClickListener(new View.OnClickListener() {
+        Button send_btn = (Button) findViewById(R.id.btn_view_nots);
+        send_btn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent tasks_intent = new Intent(v.getContext(), Tasks.class);
-                startActivity(tasks_intent);
+                Intent send_not_intent = new Intent(v.getContext(), SendNotification.class);
+                startActivity(send_not_intent);
             }
         });
 

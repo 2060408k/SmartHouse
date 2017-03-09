@@ -71,7 +71,6 @@ public class Conversations extends AppCompatActivity {
         SharedPreferences preferences;
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String user = preferences.getString("user_name","");
-        System.out.println("User: "+ user.toString());
         int index=1;
         boolean flag=false;
         for (Map<Group, ArrayList> conv : all_conversations) {

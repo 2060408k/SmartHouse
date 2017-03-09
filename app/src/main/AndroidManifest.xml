@@ -75,10 +75,12 @@
             android:name=".Tasks"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MapActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        android:name=".MapActivity"
+        android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".notifications" />
+        <activity
+            android:name=".SendNotification"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddTask"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -112,6 +114,8 @@
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
         </activity>
+
+
         <receiver
             android:name=".Database.ReminderReceiver"
             android:enabled="true" >

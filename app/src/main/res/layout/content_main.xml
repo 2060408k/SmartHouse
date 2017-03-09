@@ -25,26 +25,29 @@
         android:layout_height="wrap_content"
         android:id="@+id/change_activity" />
     <Button style="@style/Widget.AppCompat.Button.Colored"
-        android:text="@string/btn_tasks"
+        android:text="Send Notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_tasks" />
+        android:id="@+id/btn_view_nots" />
 
     <LinearLayout
         android:id="@+id/home_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"></LinearLayout>
+
     <RelativeLayout
         android:id="@+id/m_loadingPanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center" >
+        android:gravity="center">
 
         <ProgressBar
+            android:id="@+id/progressBar2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true" />
+
     </RelativeLayout>
 
 </LinearLayout>

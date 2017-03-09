@@ -68,6 +68,7 @@ public class AddTask  extends AppCompatActivity implements View.OnClickListener 
     private DatePickerDialog datePicker;
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
     HashMap userID_userName = new HashMap();
+    HashMap userID_token = new HashMap();
     private String userid;
     private String LEGACY_SERVER_KEY = "AIzaSyCNaVj28sqnozHtwgziTtuCKQIcBIJ49Jk";
     private String sampleToken ="d51VkyjeN08:APA91bE3Vnhz9XrGcq5HcV-QZ8h6eRLwPNZ6-AGYL1eXUMhJJel2kRcq1iK2UXrQ9LpzMHd0H-3fYkIjgBWUt1OZ35Ea7LK1TZG0fbGMV2TFokqAoJ9KBkZ8NFoRfkIdx46lbhV4zT73";
@@ -88,6 +89,7 @@ public class AddTask  extends AppCompatActivity implements View.OnClickListener 
                 .child(houseNum.toString());
         final String user = preferences.getString("user", "");
         final String userName = preferences.getString("user_name", "");
+
         System.out.println(houseNum);
         loadData(houseNum);
 
@@ -147,7 +149,18 @@ public class AddTask  extends AppCompatActivity implements View.OnClickListener 
                     mDatabase.child("users").child(userid).child("tasks_from").child(addTask.getTaskId()).child("body").setValue(addTask.getBody());
                     mDatabase.child("users").child(userid).child("tasks_from").child(addTask.getTaskId()).child("date").setValue(addTask.getDate());
 
-                    sendNotification(sampleToken);
+                    //Get user token to send notification
+                    String token="";
+                    Iterator iter = userID_token.entrySet().iterator();
+                    while (iter.hasNext()) {
+                        Map.Entry pair = (Map.Entry) iter.next();
+                        if (pair.getKey().toString().equals(userid)) {
+                            token = pair.getValue().toString();
+                        }
+                        iter.remove(); // avoids a ConcurrentModificationException
+                    }
+
+                    sendNotification(token);
                     onBackPressed();
                     Intent intent = new Intent(AddTask.this, Tasks.class);
                     startActivity(intent);
@@ -257,6 +270,12 @@ public class AddTask  extends AppCompatActivity implements View.OnClickListener 
                         if (pair2.getKey().toString().equals("name")) {
                             users.add(pair2.getValue().toString());
                             userID_userName.put(userid, pair2.getValue().toString());
+
+                        }
+                        if (pair2.getKey().toString().equals("token")) {
+
+                            userID_token.put(userid, pair2.getValue().toString());
+
                         }
                         it2.remove();
                     }
@@ -298,8 +317,10 @@ public class AddTask  extends AppCompatActivity implements View.OnClickListener 
                     OkHttpClient client = new OkHttpClient();
                     JSONObject json=new JSONObject();
                     JSONObject dataJson=new JSONObject();
-                    dataJson.put("body","Hi this is sent from device to device");
-                    dataJson.put("title","dummy title");
+                    preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                    String user_name = preferences.getString("user_name", "");
+                    dataJson.put("body","You have been assigned a task from: "+user_name);
+                    dataJson.put("title","SmartHouse");
                     json.put("notification",dataJson);
                     json.put("to",reg_token);
                     RequestBody body = RequestBody.create(JSON, json.toString());

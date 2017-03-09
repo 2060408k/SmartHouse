@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_send_notifications"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="false"
+    android:orientation="vertical"
+    tools:context="com.example.pbkou.smarthouse.HouseSettings.ViewAllBeacons">
+
+    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <TextView
+
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="#4a790c"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:text="@string/send_notification"
+        android:textAppearance="@android:style/TextAppearance.Large" />
+
+    <EditText
+        android:id="@+id/not_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="7dp"
+        android:contentDescription="Notification:"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Notification:" />
+
+    <Button style="@style/Widget.AppCompat.Button.Colored"
+        android:text="Send Notification"
+        android:id="@+id/btn_send_not"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp" />
+</LinearLayout>
