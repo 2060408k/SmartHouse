@@ -113,6 +113,7 @@ public class RoomDecidingActivity extends AppCompatActivity {
                                 loadBeaconsFromFirebase(house_num.toString());
 
                                 Intent intent = new Intent(getBaseContext(),MainActivity.class);
+                                finish();
                                 startActivity(intent);
                             }
 

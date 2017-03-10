@@ -40,6 +40,7 @@ import android.widget.Button;
 
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity  {
     private String user_id="";
     private String house_num="";
     private HashMap<String,String> users_locations = new HashMap<String,String>();
-    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private BluetoothAdapter mBluetoothAdapter ;
     private final static int REQUEST_ENABLE_BT=1;
     private LocationManager lm;
     private Location location;
@@ -116,27 +117,20 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //ask for coarse location
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-                if (shouldShowRequestPermissionRationale(
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                }
-
-                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
-                return;
-            }
-        }
 
         //Get the preference manager
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //location
         lm = (LocationManager)getSystemService(getBaseContext().LOCATION_SERVICE);
-        location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        if (checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED ){
+            location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
+
+
         if (location!=null){
             SharedPreferences.Editor editor =  preferences.edit();
             String lat =location.getLatitude()+"";
@@ -146,6 +140,7 @@ public class MainActivity extends AppCompatActivity  {
             editor.putString("longitude_dbl",lon);
             editor.commit();
         }
+
 
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
 
@@ -162,6 +157,7 @@ public class MainActivity extends AppCompatActivity  {
         user_name = preferences.getString("user_name","");
         user_id=preferences.getString("user","");
         house_num=preferences.getString("house_num","");
+        System.out.println(user_name+ " " +user_id + " " +house_num);
         if (user_name.equals("")) {
             findViewById(R.id.m_loadingPanel).setVisibility(View.GONE);
         } else {
@@ -219,6 +215,8 @@ public class MainActivity extends AppCompatActivity  {
             return;
 
         }
+
+        addFirebaseUpdateListener();
 //        txtView = (TextView) findViewById(R.id.textView);
 //        nReceiver = new NotificationReceiver();
 //        IntentFilter filter = new IntentFilter();
@@ -352,7 +350,79 @@ public class MainActivity extends AppCompatActivity  {
                 Log.d("Error", databaseError.toString());
             }
         });
+
+
     }
+
+    public void addFirebaseUpdateListener(){
+        final DatabaseReference mDatabase = FirebaseDatabase
+                .getInstance()
+                .getReference()
+                .child("house_numbers")
+                .child(house_num)
+                .child("users");
+
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                findViewById(R.id.m_loadingPanel).setVisibility(View.VISIBLE);
+
+                LinearLayout home_ll = (LinearLayout) findViewById(R.id.home_ll);
+                home_ll.removeAllViews();
+
+                firebase_data = (HashMap) dataSnapshot.getValue();
+
+                for (DataSnapshot childSnap : dataSnapshot.getChildren()) {
+                    String loc = (String)childSnap.child("location").getValue();
+                    String name = (String)childSnap.child("name").getValue();
+                    users_locations.put(name,loc);
+                }
+
+
+                for (Map.Entry<String, String> entry : users_locations.entrySet())
+                {
+                    TextView tv = new TextView(getBaseContext());
+                    String text = entry.getKey()+"";
+                    if(entry == null || entry.getValue()==null || entry.getKey()==null ) continue;
+                    if (entry!=null && entry.getValue()!=null && !entry.getValue().contains("_")) text = entry.getKey()+"  "+ entry.getValue();
+                    tv.setText(text);
+                    tv.setTextSize(24);
+                    tv.setLayoutParams(new ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+                    if (entry!=null && entry.getValue()!=null && (entry.getValue().equals("Absent") ||  entry.getValue().contains("_"))){
+                        tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_3_black_24dp, 0, 0, 0);
+                    }else{
+                        tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_2_black_24dp, 0, 0, 0);
+                    }
+                    home_ll.addView(tv);
+                    System.out.println(entry.getKey() + "/" + entry.getValue());
+                    if(entry!=null && entry.getValue()!=null && entry.getValue().contains("_")){
+                        final String loc =entry.getValue();
+                        tv.setTextColor(Color.BLUE);
+                        tv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(getBaseContext(),MapActivity.class);
+                                intent.putExtra("USER_LOCATION",loc);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+
+                }
+
+                findViewById(R.id.m_loadingPanel).setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
 
 //    class NotificationReceiver extends BroadcastReceiver {
 //

@@ -3,7 +3,9 @@ package com.example.pbkou.smarthouse.Database;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -40,11 +42,26 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public static final String TAG = LoginActivity.class.getSimpleName();
     private ProgressDialog mProgressDialog;
     private SharedPreferences preferences;
+    private int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION=33;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //ask for coarse location
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                if (shouldShowRequestPermissionRationale(
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                }
+
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+            }
+        }
 
         //Get the preference manager
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
