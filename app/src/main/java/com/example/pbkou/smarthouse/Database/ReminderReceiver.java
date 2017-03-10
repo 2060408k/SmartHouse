@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by pbkou on 07/03/2017.
@@ -64,9 +66,19 @@ public class ReminderReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context=context;
-        //start scanning
-        startScanningBles();
+        //start scanning repeatedly every 30 seconds
+        startRepeatingPattern();
 
+    }
+
+    public void startRepeatingPattern(){
+        Timer myTimer = new Timer();
+        myTimer.scheduleAtFixedRate(new BScanner(), 0, 30000);
+    }
+    public class BScanner extends TimerTask {
+        public void run() {
+            startScanningBles();
+        }
     }
 
     public void startScanningBles(){
